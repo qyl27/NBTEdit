@@ -7,7 +7,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 
-@EventBusSubscriber(modid = NBTEdit.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = NBTEdit.MODID, value = Dist.CLIENT)
 public class OnNBTEditShortcut {
     @SubscribeEvent
     public static void onKeyboardInput(InputEvent.Key event) {

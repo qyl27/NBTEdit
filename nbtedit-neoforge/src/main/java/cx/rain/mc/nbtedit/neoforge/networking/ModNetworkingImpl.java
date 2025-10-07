@@ -19,7 +19,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-@EventBusSubscriber(modid = NBTEdit.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = NBTEdit.MODID)
 public class ModNetworkingImpl implements IModNetworking {
 
 	@SubscribeEvent

@@ -6,7 +6,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
-@EventBusSubscriber(modid = NBTEdit.MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = NBTEdit.MODID)
 public class NBTEditCommandRegister {
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
