@@ -1,16 +1,8 @@
-plugins {
-    id 'com.gradleup.shadow'
-    id 'me.shedaniel.unified-publishing'
-}
-
 architectury {
-    platformSetupLoomIde()
     forge()
 }
 
 loom {
-    accessWidenerPath = project(':nbtedit-common').loom.accessWidenerPath
-
     forge {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
@@ -18,18 +10,7 @@ loom {
 }
 
 configurations {
-    common {
-        canBeResolved = true
-        canBeConsumed = false
-    }
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
-
-    shadowBundle {
-        canBeResolved = true
-        canBeConsumed = false
-    }
 }
 
 dependencies {
@@ -39,39 +20,9 @@ dependencies {
     shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionForge')
 }
 
-shadowJar {
-    exclude 'fabric.mod.json'
-    exclude 'architectury.common.json'
-
-    configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
-}
-
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-}
-
-sourcesJar {
-    def commonSources = project(':nbtedit-common').sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
-}
-
-publishing {
-    publications {
-        mavenForge(MavenPublication) {
-            artifactId = project.name
-            version = mavenVersion
-            from components.java
-        }
-    }
 }
 
 unifiedPublishing {
@@ -81,7 +32,6 @@ unifiedPublishing {
         gameVersions = [project.minecraft_version]
         gameLoaders = ['forge']
         releaseType = 'release'
-        changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'
 
         mainPublication tasks.remapJar
 

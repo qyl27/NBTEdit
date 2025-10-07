@@ -1,19 +1,8 @@
-plugins {
-    id 'com.gradleup.shadow'
-    id 'me.shedaniel.unified-publishing'
-}
-
 architectury {
-    platformSetupLoomIde()
     neoForge()
 }
 
 loom {
-    accessWidenerPath = project(':nbtedit-common').loom.accessWidenerPath
-
-    neoForge {
-    }
-
     runs {
         clientData {
             clientData()
@@ -26,18 +15,7 @@ loom {
 }
 
 configurations {
-    common {
-        canBeResolved = true
-        canBeConsumed = false
-    }
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
     developmentNeoForge.extendsFrom common
-
-    shadowBundle {
-        canBeResolved = true
-        canBeConsumed = false
-    }
 }
 
 dependencies {
@@ -47,40 +25,10 @@ dependencies {
     shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionNeoForge')
 }
 
-shadowJar {
-    exclude 'fabric.mod.json'
-    exclude 'architectury.common.json'
-
-    configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
-}
-
 remapJar {
+    atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-}
-
-sourcesJar {
-    def commonSources = project(':nbtedit-common').sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
-}
-
-publishing {
-    publications {
-        mavenForge(MavenPublication) {
-            artifactId = project.name
-            version = mavenVersion
-            from components.java
-        }
-    }
 }
 
 unifiedPublishing {
@@ -90,7 +38,6 @@ unifiedPublishing {
         gameVersions = [project.minecraft_version]
         gameLoaders = ['neoforge']
         releaseType = 'release'
-        changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'
 
         mainPublication tasks.remapJar
 

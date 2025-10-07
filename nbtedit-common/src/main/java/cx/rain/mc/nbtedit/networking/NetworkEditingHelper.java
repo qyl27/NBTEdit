@@ -99,7 +99,7 @@ public class NetworkEditingHelper {
                     .translatable(ModConstants.MESSAGE_EDITING_ITEM_STACK, stack.getDisplayName().getString())
                     .withStyle(ChatFormatting.GREEN));
 
-            var tag = (CompoundTag) stack.saveOptional(player.getServer().registryAccess());
+            var tag = (CompoundTag) stack.save(player.getServer().registryAccess());
             NBTEditPlatform.getNetworking().sendTo(player, new ItemStackEditingPacket(tag, NBTEditPlatform.getPermission().isReadOnly(player), stack));
         });
     }

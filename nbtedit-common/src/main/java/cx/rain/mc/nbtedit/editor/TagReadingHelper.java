@@ -1,5 +1,6 @@
 package cx.rain.mc.nbtedit.editor;
 
+import cx.rain.mc.nbtedit.editor.tag.TagParseHelper;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +35,7 @@ public class TagReadingHelper {
     public static @Nullable UUID tryReadUuid(@Nullable Tag tag) {
         if (tag instanceof IntArrayTag intArrayTag) {
             try {
-                return NbtUtils.loadUUID(intArrayTag);
+                return TagParseHelper.loadUuid(intArrayTag);
             } catch (Exception ignored) {
             }
         }
@@ -45,7 +46,10 @@ public class TagReadingHelper {
     public static @Nullable Component tryReadText(Player player, @Nullable Tag tag) {
         if (tag instanceof StringTag stringTag) {
             try {
-                return Component.Serializer.fromJson(stringTag.getAsString(), player.registryAccess());
+                var str = stringTag.asString();
+                if (str.isPresent()) {
+                    return Component.Serializer.fromJson(str.get(), player.registryAccess());
+                }
             } catch (Exception ignored) {
             }
         }

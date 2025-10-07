@@ -325,7 +325,7 @@ public class EditorScreen extends AbstractScreen {
         if (focused != null) {
             var tag = focused.getTag();
             if (!(tag instanceof CompoundTag)
-                    && !(tag instanceof CollectionTag<?>)) {
+                    && !(tag instanceof CollectionTag)) {
                 Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
                 return;
             }

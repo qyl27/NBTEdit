@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.editor.NodeParser;
 import cx.rain.mc.nbtedit.editor.TagReadingHelper;
+import cx.rain.mc.nbtedit.editor.tag.TagParseHelper;
 import cx.rain.mc.nbtedit.gui.component.ButtonComponent;
 import cx.rain.mc.nbtedit.gui.component.EditBoxComponent;
 import cx.rain.mc.nbtedit.gui.window.AbstractWindow;
@@ -58,7 +59,7 @@ public class EditingWindow extends AbstractWindow {
     @Override
     protected void createChildren() {
         var name = (nameField == null) ? node.getName() : nameField.getValue();
-        var value = (valueField == null) ? NodeParser.getString(node) : valueField.getValue();
+        var value = (valueField == null) ? NodeParser.valueAsString(node) : valueField.getValue();
 
         var uuid = TagReadingHelper.tryReadUuid(node.getTag());
         if (uuid != null) {
@@ -110,7 +111,7 @@ public class EditingWindow extends AbstractWindow {
             if (parseAsUuid) {
                 try {
                     var uuid = UUID.fromString(valueField.getValue());
-                    node.setTag(NbtUtils.createUUID(uuid));
+                    node.setTag(TagParseHelper.createUuid(uuid));
                 } catch (Exception ignored) {
                 }
             } else {

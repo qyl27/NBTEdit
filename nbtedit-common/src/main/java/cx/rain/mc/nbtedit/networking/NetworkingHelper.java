@@ -51,8 +51,4 @@ public class NetworkingHelper {
 
         return result;
     }
-
-    public static boolean isDebug() {
-        return NBTEditPlatform.getConfig().isDebug();
-    }
 }

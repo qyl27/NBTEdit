@@ -4,7 +4,7 @@ plugins {
     id 'com.gradleup.shadow' version '8.3.+' apply false
     id 'me.shedaniel.unified-publishing' version '0.1.+' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
-    id 'dev.architectury.loom' version '1.9-SNAPSHOT' apply false
+    id 'dev.architectury.loom' version '1.11-SNAPSHOT' apply false
 }
 
 def ENV = System.getenv()
@@ -136,6 +136,63 @@ allprojects {
                 credentials {
                     username ENV.MOD_MAVEN_USER
                     password ENV.MOD_MAVEN_PASS
+                }
+            }
+        }
+    }
+}
+
+[project(':nbtedit-fabric'), project(':nbtedit-forge'), project(':nbtedit-neoforge')].each { Project p ->
+    configure(p) {
+        apply plugin: 'com.gradleup.shadow'
+        apply plugin: 'me.shedaniel.unified-publishing'
+
+        architectury {
+            platformSetupLoomIde()
+        }
+
+        loom {
+            accessWidenerPath = project(':nbtedit-common').loom.accessWidenerPath
+        }
+
+        configurations {
+            common {
+                canBeResolved = true
+                canBeConsumed = false
+            }
+            compileClasspath.extendsFrom common
+            runtimeClasspath.extendsFrom common
+            shadowBundle {
+                canBeResolved = true
+                canBeConsumed = false
+            }
+        }
+
+        shadowJar {
+            exclude 'architectury.common.json'
+
+            configurations = [project.configurations.shadowBundle]
+            archiveClassifier = 'dev-shadow'
+        }
+
+        sourcesJar {
+            def commonSources = project(':nbtedit-common').sourcesJar
+            dependsOn commonSources
+            from commonSources.archiveFile.map { zipTree(it) }
+        }
+
+        components.java {
+            withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+                skip()
+            }
+        }
+
+        publishing {
+            publications {
+                mavenFabric(MavenPublication) {
+                    artifactId = p.name
+                    version = mavenVersion
+                    from components.java
                 }
             }
         }

@@ -2,6 +2,7 @@ package cx.rain.mc.nbtedit.editor;
 
 import com.google.common.base.Strings;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import cx.rain.mc.nbtedit.editor.tag.TagParseHelper;
 import net.minecraft.nbt.*;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class NbtTree {
         return tag;
     }
 
+    @SuppressWarnings("unchecked")
     public static class Node<T extends Tag> {
         private String name;
         private T nbtTag;
@@ -117,8 +119,8 @@ public class NbtTree {
             return new Node<>(tag);
         }
 
-        protected Node<Tag> newChild(Tag tag) {
-            return newChild("", tag);
+        protected void newChild(Tag tag) {
+            newChild("", tag);
         }
 
         public Node<Tag> newChild(String name, Tag tag) {
@@ -190,7 +192,7 @@ public class NbtTree {
                 return (Strings.isNullOrEmpty(name) ? "(ListTag)" : name) + ": ";
             }
 
-            String s = tag.getAsString();
+            String s = TagParseHelper.getValueAsString(tag);
             return Strings.isNullOrEmpty(name) ? s : name + ": " + s;
         }
 
@@ -201,26 +203,21 @@ public class NbtTree {
 
         public static Node<Tag> fromString(String data) {
             try {
-                var tag = TagParser.parseTag(data);
-                var name = tag.getString(TAG_NAME);
-                var type = tag.getByte(TAG_TYPE);
+                var tag = TagParser.parseCompoundFully(data);
+                var nameOptional = tag.getString(TAG_NAME);
+                var typeOptional = tag.getByte(TAG_TYPE);
 
-                Tag t = switch (type) {
-                    case 1 -> ByteTag.valueOf(tag.getByte(TAG_VALUE));
-                    case 2 -> ShortTag.valueOf(tag.getShort(TAG_VALUE));
-                    case 3 -> IntTag.valueOf(tag.getInt(TAG_VALUE));
-                    case 4 -> LongTag.valueOf(tag.getLong(TAG_VALUE));
-                    case 5 -> FloatTag.valueOf(tag.getFloat(TAG_VALUE));
-                    case 6 -> DoubleTag.valueOf(tag.getDouble(TAG_VALUE));
-                    case 7 -> new ByteArrayTag(tag.getByteArray(TAG_VALUE));
-                    case 8 -> StringTag.valueOf(tag.getString(TAG_VALUE));
-                    case 9 -> tag.getList(TAG_VALUE, tag.getByte(TAG_LIST_TYPE));
-                    case 10 -> tag.getCompound(TAG_VALUE);
-                    case 11 -> new IntArrayTag(tag.getIntArray(TAG_VALUE));
-                    case 12 -> new LongArrayTag(tag.getLongArray(TAG_VALUE));
-                    default -> throw new IllegalStateException("Unexpected value: " + type);
-                };
+                if (nameOptional.isEmpty() || typeOptional.isEmpty()) {
+                    return null;
+                }
 
+                var name = nameOptional.get();
+                var type = typeOptional.get();
+                if (!tag.contains(name)) {
+                    return null;
+                }
+
+                var t = TagParseHelper.getAs(tag, name, type);
                 return new Node<>(name, t);
             } catch (CommandSyntaxException | IllegalStateException ignored) {
                 return null;
@@ -234,9 +231,9 @@ public class NbtTree {
             tag.putByte(TAG_TYPE, nbtTag.getId());
 
             if (nbtTag instanceof ListTag listTag) {
-                tag.putByte(TAG_LIST_TYPE, listTag.getElementType());
+                tag.putByte(TAG_LIST_TYPE, TagParseHelper.getListElementType(listTag));
             }
-            return tag.getAsString();
+            return TagParseHelper.getAsString(tag);
         }
     }
 }

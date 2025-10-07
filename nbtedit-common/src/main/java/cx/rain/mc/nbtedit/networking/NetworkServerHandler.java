@@ -7,10 +7,9 @@ import cx.rain.mc.nbtedit.networking.packet.c2s.ItemStackRaytraceResultPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
+import cx.rain.mc.nbtedit.utility.LoggingHelper;
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.network.protocol.game.ClientboundSetHealthPacket;
@@ -20,8 +19,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
-
-import java.util.UUID;
 
 public class NetworkServerHandler {
     public static void handleBlockEntityResult(ServerPlayer player, BlockEntityRaytraceResultPacket packet) {
@@ -64,9 +61,7 @@ public class NetworkServerHandler {
                             player.getName().getString(), pos.getX(), pos.getY(), pos.getZ());
 
 
-                    if (NetworkingHelper.isDebug()) {
-                        NBTEdit.getInstance().getLogger().debug(tag.getAsString());
-                    }
+                    LoggingHelper.debugBlockEntityTag(pos, tag);
 
                     player.sendSystemMessage(Component
                             .translatable(ModConstants.MESSAGE_SAVING_SUCCESSFUL)
@@ -79,10 +74,7 @@ public class NetworkServerHandler {
                     NBTEdit.getInstance().getLogger().error("Player {} edited the tag of BlockEntity at XYZ {} {} {} and caused an exception!",
                             player.getName().getString(), pos.getX(), pos.getY(), pos.getZ());
 
-                    if (NetworkingHelper.isDebug()) {
-                        NBTEdit.getInstance().getLogger().error("NBT data: {}", tag.getAsString());
-                        NBTEdit.getInstance().getLogger().error(new RuntimeException(ex).toString());
-                    }
+                    LoggingHelper.errorParsingTag(ex, tag);
                 }
             } else {
                 NBTEdit.getInstance().getLogger().info("Player {} tried to edit a non-existent BlockEntity at {} {} {}.",
@@ -124,18 +116,14 @@ public class NetworkServerHandler {
                     NBTEdit.getInstance().getLogger().info("Player {} edited the tag of Entity with UUID {} .",
                             player.getName().getString(), entityUuid);
 
-                    if (NetworkingHelper.isDebug()) {
-                        NBTEdit.getInstance().getLogger().debug("New NBT of entity {} is {}",
-                                entityUuid, tag.getAsString());
-                    }
+                    LoggingHelper.debugEntityTag(entityUuid, tag);
 
-                    if (entity instanceof ServerPlayer) {
+                    if (entity instanceof ServerPlayer targetPlayer) {
                         // qyl27: if anyone found bugs with it, please open an issue.
                         // Update player info
                         // This is fairly hacky.
                         // Consider swapping to an event driven system, where classes can register to
                         // receive entity edit events and provide feedback/send packets as necessary.
-                        var targetPlayer = (ServerPlayer) entity;
                         targetPlayer.initMenu(targetPlayer.inventoryMenu);
                         var gameMode = targetPlayer.gameMode.getGameModeForPlayer();
                         if (prevGameMode != gameMode) {
@@ -164,10 +152,7 @@ public class NetworkServerHandler {
                     NBTEdit.getInstance().getLogger().error("Player {} edited the tag of entity {} and caused an exception!",
                             player.getName().getString(), entityUuid);
 
-                    if (NetworkingHelper.isDebug()) {
-                        NBTEdit.getInstance().getLogger().error("NBT data: {}", tag.getAsString());
-                        NBTEdit.getInstance().getLogger().error(new RuntimeException(ex).toString());
-                    }
+                    LoggingHelper.errorParsingTag(ex, tag);
                 }
             } else {
                 NBTEdit.getInstance().getLogger().info("Player {} tried to edit a non-existent entity {}.",
@@ -188,18 +173,15 @@ public class NetworkServerHandler {
         var itemStack = packet.itemStack();
 
         var server = player.getServer();
-
         server.execute(() -> {
             try {
-                var item = ItemStack.parseOptional(server.registryAccess(), tag);
+                var item = ItemStack.parse(server.registryAccess(), tag).orElseThrow();
                 player.setItemInHand(InteractionHand.MAIN_HAND, item);
 
                 NBTEdit.getInstance().getLogger().info("Player {} successfully edited the tag of a ItemStack named {}.",
                         player.getName().getString(), itemStack.getDisplayName().getString());
 
-                if (NetworkingHelper.isDebug()) {
-                    NBTEdit.getInstance().getLogger().debug(tag.getAsString());
-                }
+                LoggingHelper.debugItemStackTag(player, tag);
 
                 player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_SUCCESSFUL)
                         .withStyle(ChatFormatting.GREEN));
@@ -210,10 +192,7 @@ public class NetworkServerHandler {
                 NBTEdit.getInstance().getLogger().error("Player {} edited the tag of ItemStack named {} and caused an exception!",
                         player.getName().getString(), itemStack.getDisplayName().getString());
 
-                if (NetworkingHelper.isDebug()) {
-                    NBTEdit.getInstance().getLogger().error("NBT data: {}", tag.getAsString());
-                    NBTEdit.getInstance().getLogger().error(new RuntimeException(ex).toString());
-                }
+                LoggingHelper.errorParsingTag(ex, tag);
             }
         });
     }

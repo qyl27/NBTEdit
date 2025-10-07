@@ -1,5 +1,6 @@
 package cx.rain.mc.nbtedit.editor;
 
+import cx.rain.mc.nbtedit.editor.tag.TagParseHelper;
 import net.minecraft.nbt.*;
 
 import java.util.Locale;
@@ -9,63 +10,9 @@ import java.util.Locale;
  */
 public class NodeParser {
 
-    public static String getString(NbtTree.Node<?> node) {
+    public static String valueAsString(NbtTree.Node<?> node) {
         var tag = node.getTag();
-
-        if (tag instanceof ByteTag b) {
-            return Byte.toString(b.getAsByte());
-        }
-
-        if (tag instanceof ShortTag s) {
-            return Short.toString(s.getAsShort());
-        }
-
-        if (tag instanceof IntTag i) {
-            return Integer.toString(i.getAsInt());
-        }
-
-        if (tag instanceof LongTag l) {
-            return Long.toString(l.getAsLong());
-        }
-
-        if (tag instanceof FloatTag f) {
-            return Float.toString(f.getAsFloat());
-        }
-
-        if (tag instanceof DoubleTag d) {
-            return Double.toString(d.getAsDouble());
-        }
-
-        if (tag instanceof StringTag s) {
-            return s.getAsString();
-        }
-
-        if (tag instanceof ByteArrayTag ba) {
-            var s = new StringBuilder();
-            for (var b : ba.getAsByteArray()) {
-                s.append(b).append(", ");
-            }
-            return s.toString();
-        }
-
-        if (tag instanceof IntArrayTag ia) {
-            var s = new StringBuilder();
-            for (var i : ia.getAsIntArray()) {
-                s.append(i).append(", ");
-            }
-            return s.toString();
-        }
-
-        if (tag instanceof LongArrayTag la) {
-            var s = new StringBuilder();
-            for (var l : la.getAsLongArray()) {
-                s.append(l).append(", ");
-            }
-            return s.toString();
-        }
-
-        // List or Compound, returns empty.
-        return "";
+        return TagParseHelper.getValueAsString(tag);
     }
 
     public static <T extends Tag> Tag getTag(NbtTree.Node<T> node, String value) {
