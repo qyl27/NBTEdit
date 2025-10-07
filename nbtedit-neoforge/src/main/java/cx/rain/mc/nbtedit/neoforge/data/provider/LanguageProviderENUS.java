@@ -17,13 +17,13 @@ public class LanguageProviderENUS extends LanguageProvider {
 
         add(ModConstants.MESSAGE_NOT_PLAYER, "Only players can use this command.");
         add(ModConstants.MESSAGE_NO_PERMISSION, "You have no permission to use NBTEdit.");
-        add(ModConstants.MESSAGE_NOT_LOADED, "Block pos was not loaded.");
-        add(ModConstants.MESSAGE_NOTHING_TO_EDIT, "There is no any target for editing.");
-        add(ModConstants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY, "There is no BlockEntity to edit.");
-        add(ModConstants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER, "Sorry, but you cannot edit other player.");
+        add(ModConstants.MESSAGE_NOT_LOADED, "Block pos haven't be loaded.");
+        add(ModConstants.MESSAGE_NOTHING_TO_EDIT, "No target to editing!");
+        add(ModConstants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY, "This Block has no BlockEntity to edit.");
+        add(ModConstants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER, "Sorry, but you cannot edit other player due to mod config.");
         add(ModConstants.MESSAGE_UNKNOWN_ENTITY_ID, "Invalid Entity ID.");
-        add(ModConstants.MESSAGE_EDITING_ENTITY, "Editing Entity (%1$s).");
-        add(ModConstants.MESSAGE_EDITING_BLOCK_ENTITY, "Editing BlockEntity (%1$s, %2$s, %3$s).");
+        add(ModConstants.MESSAGE_EDITING_ENTITY, "Editing Entity (ID: %1$s).");
+        add(ModConstants.MESSAGE_EDITING_BLOCK_ENTITY, "Editing BlockEntity (X: %1$s, Y: %2$s, Z: %3$s).");
         add(ModConstants.MESSAGE_EDITING_ITEM_STACK, "Editing ItemStack (%1$s).");
         add(ModConstants.MESSAGE_SAVING_SUCCESSFUL, "Save successful!");
         add(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT, "Save failed! Invalid NBT.");
@@ -44,8 +44,8 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(ModConstants.NBT_TYPE_LONG_ARRAY, "Long Array");
 
         add(ModConstants.GUI_TITLE_EDITOR_READ_ONLY, "[Read-only] ");
-        add(ModConstants.GUI_TITLE_EDITOR_ENTITY, "Editing Entity (%1$s)");
-        add(ModConstants.GUI_TITLE_EDITOR_BLOCK_ENTITY, "Editing BlockEntity (%1$s, %2$s, %3$s)");
+        add(ModConstants.GUI_TITLE_EDITOR_ENTITY, "Editing Entity (ID: %1$s)");
+        add(ModConstants.GUI_TITLE_EDITOR_BLOCK_ENTITY, "Editing BlockEntity (X: %1$s, Y: %2$s, Z: %3$s)");
         add(ModConstants.GUI_TITLE_EDITOR_ITEM_STACK, "Editing ItemStack (%1$s)");
         add(ModConstants.GUI_TITLE_EDITOR_ENTITY_NARRATION, "Entity NBT editor");
         add(ModConstants.GUI_TITLE_EDITOR_BLOCK_ENTITY_NARRATION, "BlockEntity NBT editor");
@@ -89,11 +89,11 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(ModConstants.GUI_TOOLTIP_BUTTON_OK, "OK");
         add(ModConstants.GUI_TOOLTIP_BUTTON_CANCEL, "Cancel");
 
-        add(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT, "[Text Preview] ");
+        add(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT, "[Text Preview]");
         add(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT_NARRATION, "Text Preview: ");
-        add(ModConstants.GUI_TOOLTIP_PREVIEW_ITEM, "[Item Preview] ");
+        add(ModConstants.GUI_TOOLTIP_PREVIEW_ITEM, "[Item Preview]");
         add(ModConstants.GUI_TOOLTIP_PREVIEW_ITEM_NARRATION, "Item Preview: ");
-        add(ModConstants.GUI_TOOLTIP_PREVIEW_UUID, "[UUID Preview] ");
+        add(ModConstants.GUI_TOOLTIP_PREVIEW_UUID, "[UUID Preview]");
         add(ModConstants.GUI_TOOLTIP_PREVIEW_UUID_NARRATION, "UUID Preview: ");
     }
 }
