@@ -1,5 +1,6 @@
 package cx.rain.mc.nbtedit.editor;
 
+import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.editor.tag.TagParseHelper;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
@@ -45,13 +46,9 @@ public class TagReadingHelper {
 
     public static @Nullable Component tryReadText(Player player, @Nullable Tag tag) {
         if (tag instanceof StringTag stringTag) {
-            try {
-                var str = stringTag.asString();
-                if (str.isPresent()) {
-                    return Component.Serializer.fromJson(str.get(), player.registryAccess());
-                }
-            } catch (Exception ignored) {
-            }
+            return stringTag.asString()
+                    .flatMap(s -> NBTEdit.getInstance().getRegistryContextSerializer().deserializeComponent(s))
+                    .orElse(null);
         }
 
         return null;

@@ -8,7 +8,6 @@ import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +29,7 @@ public class NetworkEditingHelper {
             NBTEdit.getInstance().getLogger().debug("Player {} requested BlockEntity at {} {} {}.",
                     player.getName().getString(), pos.getX(), pos.getY(), pos.getZ());
 
-            var blockEntity = player.serverLevel().getBlockEntity(pos);
+            var blockEntity = player.level().getBlockEntity(pos);
             if (blockEntity == null) {
                 player.createCommandSourceStack().sendFailure(Component
                         .translatable(ModConstants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
@@ -53,7 +52,7 @@ public class NetworkEditingHelper {
                 return;
             }
 
-            var entity = player.serverLevel().getEntity(entityUuid);
+            var entity = player.level().getEntity(entityUuid);
             assert entity != null;
 
             if (entity instanceof Player
@@ -71,13 +70,14 @@ public class NetworkEditingHelper {
                     .translatable(ModConstants.MESSAGE_EDITING_ENTITY, entityUuid.toString())
                     .withStyle(ChatFormatting.GREEN));
 
-            var tag = new CompoundTag();
+            var serializer = NBTEdit.getInstance().getRegistryContextSerializer();
+            var output = serializer.createTagValueOutput();
             if (entity instanceof Player) {
-                entity.saveWithoutId(tag);
+                entity.saveWithoutId(output);
             } else {
-                entity.saveAsPassenger(tag);
+                entity.saveAsPassenger(output);
             }
-            NBTEditPlatform.getNetworking().sendTo(player, new EntityEditingPacket(tag, NBTEditPlatform.getPermission().isReadOnly(player), entity.getUUID(), entity.getId()));
+            NBTEditPlatform.getNetworking().sendTo(player, new EntityEditingPacket(output.buildResult(), NBTEditPlatform.getPermission().isReadOnly(player), entity.getUUID(), entity.getId()));
         });
     }
 
@@ -99,7 +99,7 @@ public class NetworkEditingHelper {
                     .translatable(ModConstants.MESSAGE_EDITING_ITEM_STACK, stack.getDisplayName().getString())
                     .withStyle(ChatFormatting.GREEN));
 
-            var tag = (CompoundTag) stack.save(player.getServer().registryAccess());
+            var tag = NBTEdit.getInstance().getRegistryContextSerializer().serializeItemStack(stack);
             NBTEditPlatform.getNetworking().sendTo(player, new ItemStackEditingPacket(tag, NBTEditPlatform.getPermission().isReadOnly(player), stack));
         });
     }

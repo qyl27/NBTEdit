@@ -6,6 +6,11 @@ import cx.rain.mc.nbtedit.api.netowrking.IModNetworking;
 import cx.rain.mc.nbtedit.forge.command.ModPermissionImpl;
 import cx.rain.mc.nbtedit.forge.config.ModConfigImpl;
 import cx.rain.mc.nbtedit.forge.networking.ModNetworkingImpl;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartedEvent;
+
+import java.util.function.Consumer;
 
 public class NBTEditPlatformImpl {
     private static final ModNetworkingImpl NETWORKING = new ModNetworkingImpl();
@@ -23,7 +28,11 @@ public class NBTEditPlatformImpl {
     public static IModPermission getPermission() {
         return PERMISSION;
     }
-    
+
+    public static void onServerStarted(Consumer<MinecraftServer> consumer) {
+        MinecraftForge.EVENT_BUS.register((Consumer<ServerStartedEvent>) event -> consumer.accept(event.getServer()));
+    }
+
     static void load() {
     }
 }

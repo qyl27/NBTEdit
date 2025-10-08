@@ -265,8 +265,9 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
             }
         }
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 500);
+        guiGraphics.pose().pushMatrix();
+        // XXX
+//        guiGraphics.pose().translate(0, 0, 500);
 
         if (hasWindow()) {
             drawGrayishBackground(guiGraphics);
@@ -282,7 +283,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
             getMutexWindow().render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     @Override
@@ -356,10 +357,11 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
     }
 
     public static void drawGrayishBackground(GuiGraphics guiGraphics) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().last().pose().translate(0, 0, -1);
+        guiGraphics.pose().pushMatrix();
+        // XXX
+//        guiGraphics.pose().translate().pose().translate(0, 0, -1);
         guiGraphics.fillGradient(0, 0, guiGraphics.guiWidth(), guiGraphics.guiHeight(), -1072689136, -804253680);
-        guiGraphics.pose().last().pose().translate(0, 0, 1);
-        guiGraphics.pose().popPose();
+//        guiGraphics.pose().last().pose().translate(0, 0, 1);
+        guiGraphics.pose().popMatrix();
     }
 }

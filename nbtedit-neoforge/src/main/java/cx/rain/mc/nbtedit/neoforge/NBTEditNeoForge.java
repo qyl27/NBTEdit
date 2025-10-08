@@ -19,15 +19,6 @@ public class NBTEditNeoForge {
 
         container.registerConfig(ModConfig.Type.COMMON, ModConfigImpl.CONFIG, "nbtedit.toml");
 
-        bus.addListener(this::setup);
-        bus.addListener(this::setupClient);
-
         nbtedit.getLogger().info("NBTEdit loaded!");
-    }
-
-    private void setup(FMLCommonSetupEvent event) {
-    }
-
-    private void setupClient(FMLClientSetupEvent event) {
     }
 }

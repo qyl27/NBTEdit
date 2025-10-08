@@ -77,12 +77,12 @@ public class ScrollableViewport extends AbstractComposedComponent {
         var maxX = getX() + getWidth() - (shouldShowVerticalBar() ? getScrollBarWidth() : 0);
         var maxY = getY() + getHeight() - (shouldShowHorizontalBar() ? getScrollBarWidth() : 0);
         guiGraphics.enableScissor(getX(), getY(), maxX, maxY);
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(getX() - getScrollXOffset(), getY() - getScrollYOffset(), 0.0);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(getX() - getScrollXOffset(), getY() - getScrollYOffset());
 
         super.renderWidget(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
 
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
         guiGraphics.disableScissor();
 
         if (shouldShowVerticalBar()) {

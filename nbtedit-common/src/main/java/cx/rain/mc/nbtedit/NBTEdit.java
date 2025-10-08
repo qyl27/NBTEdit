@@ -1,5 +1,6 @@
 package cx.rain.mc.nbtedit;
 
+import cx.rain.mc.nbtedit.utility.RegistryContextSerializer;
 import net.minecraft.SharedConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,12 @@ public class NBTEdit {
 
         logger.info("Loading NBTEdit ver: {} on mc {}, build at {}",
                 VERSION,
-                SharedConstants.getCurrentVersion().getName(),
+                SharedConstants.getCurrentVersion().name(),
                 BUILD_TIME != null ? BUILD_TIME : "B.C. 3200");
+
+        NBTEditPlatform.onServerStarted(server -> {
+            this.registryContextSerializer = new RegistryContextSerializer(server.registryAccess());
+        });
     }
 
     public static NBTEdit getInstance() {
@@ -49,5 +54,15 @@ public class NBTEdit {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    private RegistryContextSerializer registryContextSerializer;
+
+    public RegistryContextSerializer getRegistryContextSerializer() {
+        if (registryContextSerializer == null) {
+            throw new IllegalStateException("RegistryContextSerializer has not been initialized");
+        }
+
+        return registryContextSerializer;
     }
 }

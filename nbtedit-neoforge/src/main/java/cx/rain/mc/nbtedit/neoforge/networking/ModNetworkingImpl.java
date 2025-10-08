@@ -24,7 +24,7 @@ public class ModNetworkingImpl implements IModNetworking {
 
 	@SubscribeEvent
 	public static void register(RegisterPayloadHandlersEvent event) {
-		var registrar = event.registrar(NBTEdit.VERSION);
+		var registrar = event.registrar(NBTEdit.VERSION).optional();
 
 		registrar.playToClient(RaytracePacket.TYPE, RaytracePacket.CODEC, ModNetworkingImpl::clientHandle);
 

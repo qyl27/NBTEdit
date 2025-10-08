@@ -42,7 +42,7 @@ public class NetworkingHelper {
     }
 
     public static boolean checkPosLoaded(ServerPlayer player, BlockPos pos) {
-        var result = player.serverLevel().isLoaded(pos);
+        var result = player.level().isLoaded(pos);
 
         if (!result) {
             player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_NOT_LOADED)

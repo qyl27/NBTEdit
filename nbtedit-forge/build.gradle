@@ -7,6 +7,12 @@ loom {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
     }
+
+    runs {
+        configureEach {
+            property 'eventbus.api.strictRuntimeChecks', 'true'
+        }
+    }
 }
 
 configurations {
@@ -15,6 +21,7 @@ configurations {
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0-beta.10'
 
     common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionForge')

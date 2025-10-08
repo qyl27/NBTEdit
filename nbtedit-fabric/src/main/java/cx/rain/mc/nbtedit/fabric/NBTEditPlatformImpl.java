@@ -8,7 +8,11 @@ import cx.rain.mc.nbtedit.fabric.command.FabricPermissionApiImpl;
 import cx.rain.mc.nbtedit.fabric.command.VanillaPermissionImpl;
 import cx.rain.mc.nbtedit.fabric.config.ModConfigImpl;
 import cx.rain.mc.nbtedit.fabric.networking.ModNetworkingImpl;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.MinecraftServer;
+
+import java.util.function.Consumer;
 
 public class NBTEditPlatformImpl {
     private static final ModNetworkingImpl NETWORKING = new ModNetworkingImpl();
@@ -45,5 +49,9 @@ public class NBTEditPlatformImpl {
 
     public static IModPermission getPermission() {
         return PERMISSION;
+    }
+
+    public static void onServerStarted(Consumer<MinecraftServer> consumer) {
+        ServerLifecycleEvents.SERVER_STARTED.register(consumer::accept);
     }
 }

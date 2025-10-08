@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -95,11 +96,11 @@ public class NbtTreeViewNode extends AbstractComponent {
         }
 
         if (node.hasChild()) {
-            graphics.blitSprite(RenderType::guiTextured, arrowSprite, getX() - 9, getY(), 9, getHeight());
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, arrowSprite, getX() - 9, getY(), 9, getHeight());
         }
 
         var tagSprite = EditorButton.ofTag(node.getTag()).getSprite();
-        graphics.blitSprite(RenderType::guiTextured, tagSprite, getX() + 1, getY(), 9, getHeight());
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, tagSprite, getX() + 1, getY(), 9, getHeight());
         graphics.drawString(getMinecraft().font, getMessage(), getX() + 11, getY() + (getHeight() - 8) / 2, color);
     }
 
