@@ -1,10 +1,11 @@
-package cx.rain.mc.nbtedit.utility;
+package cx.rain.mc.nbtedit.utility.client;
 
 import cx.rain.mc.nbtedit.NBTEditPlatform;
 import cx.rain.mc.nbtedit.gui.EditorScreen;
 import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

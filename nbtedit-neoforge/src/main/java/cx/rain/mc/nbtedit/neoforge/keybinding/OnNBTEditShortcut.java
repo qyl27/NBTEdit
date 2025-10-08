@@ -1,7 +1,7 @@
 package cx.rain.mc.nbtedit.neoforge.keybinding;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.utility.RayTraceHelper;
+import cx.rain.mc.nbtedit.utility.client.RayTraceHelper;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

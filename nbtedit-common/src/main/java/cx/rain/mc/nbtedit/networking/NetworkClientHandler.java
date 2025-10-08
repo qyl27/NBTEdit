@@ -4,13 +4,10 @@ import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.s2c.RaytracePacket;
-import cx.rain.mc.nbtedit.utility.ModConstants;
-import cx.rain.mc.nbtedit.utility.RayTraceHelper;
-import cx.rain.mc.nbtedit.utility.ScreenHelper;
-import net.minecraft.ChatFormatting;
+import cx.rain.mc.nbtedit.utility.client.RayTraceHelper;
+import cx.rain.mc.nbtedit.utility.client.ScreenHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.Component;
 
 public class NetworkClientHandler {
 
