@@ -3,6 +3,7 @@ package cx.rain.mc.nbtedit.utility;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -45,8 +46,12 @@ public class RegistryContextSerializer {
     }
 
     public Optional<Component> deserializeComponent(String str) {
-        var json = GsonHelper.parse(str);
-        return ComponentSerialization.CODEC.parse(jsonRegistryOps, json).resultOrPartial();
+        try {
+            var json = GsonHelper.parse(str);
+            return ComponentSerialization.CODEC.parse(jsonRegistryOps, json).resultOrPartial();
+        } catch (JsonParseException ex) {
+            return Optional.empty();
+        }
     }
 
     public CompoundTag serializeItemStack(ItemStack stack) {

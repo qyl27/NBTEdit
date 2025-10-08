@@ -256,8 +256,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         var maskedMouseX = hasMutexWindow() ? -1 : mouseX;
         var maskedMouseY = hasMutexWindow() ? -1 : mouseY;
 
-        renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(minecraft.font, title, this.width / 2, 4, 16777215);
+        guiGraphics.drawCenteredString(minecraft.font, title, this.width / 2, 4, 0xFFFFFFFF);
 
         for (var c : getChildren()) {
             if (!(c instanceof IWindow)) {
@@ -358,10 +357,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
 
     public static void drawGrayishBackground(GuiGraphics guiGraphics) {
         guiGraphics.pose().pushMatrix();
-        // XXX
-//        guiGraphics.pose().translate().pose().translate(0, 0, -1);
         guiGraphics.fillGradient(0, 0, guiGraphics.guiWidth(), guiGraphics.guiHeight(), -1072689136, -804253680);
-//        guiGraphics.pose().last().pose().translate(0, 0, 1);
         guiGraphics.pose().popMatrix();
     }
 }
