@@ -30,7 +30,7 @@ public class NBTEditPlatformImpl {
     }
 
     public static void onServerStarted(Consumer<MinecraftServer> consumer) {
-        MinecraftForge.EVENT_BUS.register((Consumer<ServerStartedEvent>) event -> consumer.accept(event.getServer()));
+        ServerStartedEvent.BUS.addListener(event -> consumer.accept(event.getServer()));
     }
 
     static void load() {
