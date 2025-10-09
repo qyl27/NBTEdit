@@ -51,6 +51,8 @@
   "message.nbtedit.editing.block_entity": "编辑方块实体（X：%1$s，Y：%2$s，Z：%3$s）",
   "message.nbtedit.editing.entity": "编辑实体（ID：%1$s）",
   "message.nbtedit.editing.item_stack": "编辑物品（%1$s）",
+  "message.nbtedit.missing_client_mod": "客户端未安装NBTEdit，功能不可用",
+  "message.nbtedit.missing_server_mod": "服务器未安装NBTEdit，功能不可用",
   "message.nbtedit.nbt_type.byte": "字节",
   "message.nbtedit.nbt_type.byte_array": "字节数组",
   "message.nbtedit.nbt_type.compound": "组合",

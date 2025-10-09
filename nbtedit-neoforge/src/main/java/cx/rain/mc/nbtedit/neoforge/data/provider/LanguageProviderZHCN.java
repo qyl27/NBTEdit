@@ -29,6 +29,8 @@ public class LanguageProviderZHCN extends LanguageProvider {
         add(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT, "保存失败！NBT结构无效");
         add(ModConstants.MESSAGE_SAVING_FAILED_BLOCK_ENTITY_NOT_EXISTS, "保存失败！目标方块实体已经不存在了");
         add(ModConstants.MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS, "保存失败！目标实体已经不存在了");
+        add(ModConstants.MESSAGE_MISSING_CLIENT_MOD, "客户端未安装NBTEdit，功能不可用");
+        add(ModConstants.MESSAGE_MISSING_SERVER_MOD, "服务器未安装NBTEdit，功能不可用");
 
         add(ModConstants.NBT_TYPE_BYTE, "字节");
         add(ModConstants.NBT_TYPE_SHORT, "短整数");

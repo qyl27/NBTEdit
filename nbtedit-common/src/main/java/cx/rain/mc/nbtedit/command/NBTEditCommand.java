@@ -33,7 +33,7 @@ public class NBTEditCommand {
         var player = context.getSource().getPlayerOrException();
         NBTEditPlatform.getNetworking().sendTo(player, new RaytracePacket());
 
-        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " issued command /nbtedit.");
+        NBTEdit.getInstance().getLogger().info("Player {} issued command /nbtedit.", player.getName().getString());
         return 1;
     }
 
@@ -41,8 +41,7 @@ public class NBTEditCommand {
         var player = context.getSource().getPlayerOrException();
         var entity = EntityArgument.getEntity(context, "entity");
 
-        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-                " issued command /nbtedit with an entity.");
+        NBTEdit.getInstance().getLogger().info("Player {} issued command /nbtedit with an entity.", player.getName().getString());
         NetworkEditingHelper.editEntity(player, entity.getUUID());
         return 1;
     }
@@ -51,9 +50,7 @@ public class NBTEditCommand {
         var player = context.getSource().getPlayerOrException();
         var pos = BlockPosArgument.getBlockPos(context, "block");
 
-        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-                " issued command /nbtedit with an block at XYZ: " +
-                pos.getX() + " " + pos.getY() + " " + pos.getZ() + ".");
+        NBTEdit.getInstance().getLogger().info("Player {} issued command /nbtedit with an block at XYZ: {} {} {}.", player.getName().getString(), pos.getX(), pos.getY(), pos.getZ());
         NetworkEditingHelper.editBlockEntity(player, pos);
         return 1;
     }
@@ -61,16 +58,14 @@ public class NBTEditCommand {
     private static int onEntityMe(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrException();
 
-        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-                " issued command /nbtedit to edit itself.");
+        NBTEdit.getInstance().getLogger().info("Player {} issued command /nbtedit to edit itself.", player.getName().getString());
         NetworkEditingHelper.editEntity(player, player.getUUID());
         return 1;
     }
 
     private static int onItemHand(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrException();
-        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-                " issued command /nbtedit to edit hand.");
+        NBTEdit.getInstance().getLogger().info("Player {} issued command /nbtedit to edit hand.", player.getName().getString());
 
         var stack = player.getMainHandItem();
         NetworkEditingHelper.editItemStack(player, stack);

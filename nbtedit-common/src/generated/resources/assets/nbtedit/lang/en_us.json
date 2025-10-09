@@ -51,6 +51,8 @@
   "message.nbtedit.editing.block_entity": "Editing BlockEntity (X: %1$s, Y: %2$s, Z: %3$s).",
   "message.nbtedit.editing.entity": "Editing Entity (ID: %1$s).",
   "message.nbtedit.editing.item_stack": "Editing ItemStack (%1$s).",
+  "message.nbtedit.missing_client_mod": "NBTEdit is not available due to not installed the mod on your client.",
+  "message.nbtedit.missing_server_mod": "NBTEdit is not available due to not installed the mod on this server.",
   "message.nbtedit.nbt_type.byte": "Byte",
   "message.nbtedit.nbt_type.byte_array": "Byte Array",
   "message.nbtedit.nbt_type.compound": "Compound",

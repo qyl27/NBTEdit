@@ -1,7 +1,6 @@
 package cx.rain.mc.nbtedit.fabric.networking;
 
 import cx.rain.mc.nbtedit.api.netowrking.IModNetworking;
-import cx.rain.mc.nbtedit.networking.NetworkEditingHelper;
 import cx.rain.mc.nbtedit.networking.NetworkServerHandler;
 import cx.rain.mc.nbtedit.networking.packet.c2s.BlockEntityRaytraceResultPacket;
 import cx.rain.mc.nbtedit.networking.packet.c2s.EntityRaytraceResultPacket;
@@ -10,8 +9,10 @@ import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.s2c.RaytracePacket;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -69,6 +70,11 @@ public class ModNetworkingImpl implements IModNetworking {
 
 	@Override
 	public void sendTo(ServerPlayer player, CustomPacketPayload packet) {
+        if (!ServerPlayNetworking.canSend(player, packet.type())) {
+            player.sendSystemMessage(Component.translatableWithFallback(ModConstants.MESSAGE_MISSING_CLIENT_MOD, ModConstants.MESSAGE_MISSING_CLIENT_MOD_FALLBACK));
+            return;
+        }
+
 		ServerPlayNetworking.send(player, packet);
 	}
 

@@ -11,7 +11,9 @@ import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.s2c.RaytracePacket;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -121,6 +123,10 @@ public class ModNetworkingImpl implements IModNetworking {
 
 	@Override
 	public void sendTo(ServerPlayer player, CustomPacketPayload packet) {
+        if (!player.connection.hasChannel(packet)) {
+            player.sendSystemMessage(Component.translatableWithFallback(ModConstants.MESSAGE_MISSING_CLIENT_MOD, ModConstants.MESSAGE_MISSING_CLIENT_MOD_FALLBACK));
+            return;
+        }
 		player.connection.send(packet);
 	}
 
@@ -128,6 +134,10 @@ public class ModNetworkingImpl implements IModNetworking {
 	public void sendToServer(CustomPacketPayload packet) {
 		var connection = Minecraft.getInstance().getConnection();
 		if (connection != null) {
+            if (!connection.hasChannel(packet)) {
+                Minecraft.getInstance().getChatListener().handleSystemMessage(Component.translatableWithFallback(ModConstants.MESSAGE_MISSING_SERVER_MOD, ModConstants.MESSAGE_MISSING_SERVER_MOD_FALLBACK), false);
+                return;
+            }
 			connection.send(packet);
 		}
 	}

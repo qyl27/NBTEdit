@@ -29,6 +29,8 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT, "Save failed! Invalid NBT.");
         add(ModConstants.MESSAGE_SAVING_FAILED_BLOCK_ENTITY_NOT_EXISTS, "Save failed! the BlockEntity is no longer exists.");
         add(ModConstants.MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS, "Save failed! the Entity is no longer exists.");
+        add(ModConstants.MESSAGE_MISSING_CLIENT_MOD, "NBTEdit is not available due to not installed the mod on your client.");
+        add(ModConstants.MESSAGE_MISSING_SERVER_MOD, "NBTEdit is not available due to not installed the mod on this server.");
 
         add(ModConstants.NBT_TYPE_BYTE, "Byte");
         add(ModConstants.NBT_TYPE_SHORT, "Short");

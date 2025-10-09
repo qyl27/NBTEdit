@@ -19,6 +19,11 @@ public class ModConstants {
     public static final String MESSAGE_SAVING_FAILED_INVALID_NBT = "message.nbtedit.saving.failed.invalid_nbt";
     public static final String MESSAGE_SAVING_FAILED_BLOCK_ENTITY_NOT_EXISTS = "message.nbtedit.saving.failed.block_entity_not_exists";
     public static final String MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS = "message.nbtedit.saving.failed.entity_not_exists";
+    public static final String MESSAGE_MISSING_CLIENT_MOD =  "message.nbtedit.missing_client_mod";
+    public static final String MESSAGE_MISSING_SERVER_MOD =  "message.nbtedit.missing_server_mod";
+    // For most of the missing client mod time, no translate key available.
+    public static final String MESSAGE_MISSING_CLIENT_MOD_FALLBACK =  "NBTEdit is not available due to not installed the mod on your client.";
+    public static final String MESSAGE_MISSING_SERVER_MOD_FALLBACK =  "NBTEdit is not available due to not installed the mod on this server.";
 
     public static final String NBT_TYPE_BYTE = "message.nbtedit.nbt_type.byte";
     public static final String NBT_TYPE_SHORT = "message.nbtedit.nbt_type.short";
