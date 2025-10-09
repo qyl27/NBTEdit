@@ -25,8 +25,7 @@ public class ModNetworkingImpl implements IModNetworking {
 	public ModNetworkingImpl() {
 		channel = ChannelBuilder.named(CHANNEL_ID)
 				.networkProtocolVersion(NBTEdit.VERSION.hashCode())
-				.optionalClient()
-				.optionalServer()
+				.optional()
 				.simpleChannel();
 
 		registerMessages();
