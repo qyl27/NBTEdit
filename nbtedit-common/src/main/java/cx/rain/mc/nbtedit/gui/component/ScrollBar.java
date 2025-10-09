@@ -5,6 +5,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -129,29 +132,29 @@ public class ScrollBar extends AbstractComponent {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (isMouseOver(mouseX, mouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (isMouseOver(event.x(), event.y())) {
             dragging = true;
             return true;
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+    public boolean mouseReleased(MouseButtonEvent event) {
+        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             dragging = false;
         }
 
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
         if (isActive() && dragging) {
             var mousePrimary = isVertical() ? mouseY : mouseX;
-            var dragPrimary = isVertical() ? dragY : dragX;
+            var dragPrimary = isVertical() ? event.y() : event.x();
 
             if (mousePrimary < (double) getPrimaryStart()) {
                 this.addScrollAmount(-scrollUnit);
@@ -176,17 +179,17 @@ public class ScrollBar extends AbstractComponent {
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean keyReleased(KeyEvent event) {
         if (isHoveredOrFocused()) {
-            if (keyCode == GLFW.GLFW_KEY_UP) {
+            if (event.key() == GLFW.GLFW_KEY_UP) {
                 addScrollAmount(-scrollUnit);
                 return true;
-            } else if (keyCode == GLFW.GLFW_KEY_DOWN) {
+            } else if (event.key() == GLFW.GLFW_KEY_DOWN) {
                 addScrollAmount(scrollUnit);
                 return true;
             }
         }
 
-        return super.keyReleased(keyCode, scanCode, modifiers);
+        return super.keyReleased(event);
     }
 }

@@ -1,6 +1,9 @@
 package cx.rain.mc.nbtedit.gui.component;
 
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -20,18 +23,18 @@ public interface IComposedComponent extends IComponent, ContainerEventHandler {
     }
 
     @Override
-    default boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return ContainerEventHandler.super.mouseClicked(mouseX, mouseY, button);
+    default boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        return ContainerEventHandler.super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    default boolean mouseReleased(double mouseX, double mouseY, int button) {
-        return ContainerEventHandler.super.mouseReleased(mouseX, mouseY, button);
+    default boolean mouseReleased(MouseButtonEvent event) {
+        return ContainerEventHandler.super.mouseReleased(event);
     }
 
     @Override
-    default boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        return ContainerEventHandler.super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    default boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
+        return ContainerEventHandler.super.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override
@@ -40,17 +43,17 @@ public interface IComposedComponent extends IComponent, ContainerEventHandler {
     }
 
     @Override
-    default boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return ContainerEventHandler.super.keyPressed(keyCode, scanCode, modifiers);
+    default boolean keyPressed(KeyEvent event) {
+        return ContainerEventHandler.super.keyPressed(event);
     }
 
     @Override
-    default boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return ContainerEventHandler.super.keyReleased(keyCode, scanCode, modifiers);
+    default boolean keyReleased(KeyEvent event) {
+        return ContainerEventHandler.super.keyReleased(event);
     }
 
     @Override
-    default boolean charTyped(char codePoint, int modifiers) {
-        return ContainerEventHandler.super.charTyped(codePoint, modifiers);
+    default boolean charTyped(CharacterEvent event) {
+        return ContainerEventHandler.super.charTyped(event);
     }
 }

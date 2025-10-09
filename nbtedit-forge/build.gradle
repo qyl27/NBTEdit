@@ -21,7 +21,7 @@ configurations {
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
-    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0-beta.10'
+    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0-beta.12'
 
     common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionForge')
@@ -36,7 +36,7 @@ unifiedPublishing {
     project {
         displayName = "NBTEdit Forge ${project.minecraft_version}-${project.mod_version}"
         version = publishVersion
-        gameVersions = [project.minecraft_version, '1.21.7']
+        gameVersions = [project.minecraft_version, '1.21.9']
         gameLoaders = ['forge']
         releaseType = 'release'
 

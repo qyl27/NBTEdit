@@ -1,6 +1,7 @@
 package cx.rain.mc.nbtedit.neoforge.keybinding;
 
 import cx.rain.mc.nbtedit.NBTEdit;
+import cx.rain.mc.nbtedit.NBTEditClient;
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -16,7 +17,7 @@ import org.lwjgl.glfw.GLFW;
 public class NBTEditKeyBindings {
     public static final KeyMapping NBTEDIT_SHORTCUT = new KeyMapping(ModConstants.KEY_NBTEDIT_SHORTCUT,
             KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_N, ModConstants.KEY_CATEGORY);
+            GLFW.GLFW_KEY_N, NBTEditClient.KEY_CATEGORY);
 
     @SubscribeEvent
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {

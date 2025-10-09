@@ -3,3 +3,4 @@ accessible field net/minecraft/nbt/CompoundTag tags Ljava/util/Map;
 accessible field net/minecraft/nbt/ListTag list Ljava/util/List;
 accessible method net/minecraft/server/level/ServerPlayer initMenu (Lnet/minecraft/world/inventory/AbstractContainerMenu;)V
 accessible field net/minecraft/nbt/TagParser NBT_OPS_PARSER Lnet/minecraft/nbt/TagParser;
+accessible field net/minecraft/server/level/ServerPlayer server Lnet/minecraft/server/MinecraftServer;

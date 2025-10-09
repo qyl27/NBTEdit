@@ -2,6 +2,8 @@ package cx.rain.mc.nbtedit.gui.component;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -122,43 +124,71 @@ public class ScrollableViewport extends AbstractComposedComponent {
         }
     }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (shouldShowVerticalBar() && verticalScrollBar.isMouseOver(mouseX, mouseY)) {
-            return verticalScrollBar.mouseClicked(mouseX, mouseY, button);
-        }
+    private double getMaskedX(double rawX) {
+        return rawX - getX() + getScrollXOffset();
+    }
 
-        if (shouldShowHorizontalBar() && horizontalScrollBar.isMouseOver(mouseX, mouseY)) {
-            return horizontalScrollBar.mouseClicked(mouseX, mouseY, button);
-        }
+    private double getMaskedY(double rawY) {
+        return rawY - getY() + getScrollYOffset();
+    }
 
-        return super.mouseClicked(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), button);
+    private MouseButtonEvent getMaskedMouseEvent(MouseButtonEvent rawEvent) {
+        var mouseX = rawEvent.x();
+        var mouseY = rawEvent.y();
+        var button = rawEvent.buttonInfo();
+        return new MouseButtonEvent(getMaskedX(mouseX), getMaskedY(mouseY), button);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        var mouseX = event.x();
+        var mouseY = event.y();
+
         if (shouldShowVerticalBar() && verticalScrollBar.isMouseOver(mouseX, mouseY)) {
-            return verticalScrollBar.mouseReleased(mouseX, mouseY, button);
+            return verticalScrollBar.mouseClicked(event, isDoubleClick);
         }
 
         if (shouldShowHorizontalBar() && horizontalScrollBar.isMouseOver(mouseX, mouseY)) {
-            return horizontalScrollBar.mouseReleased(mouseX, mouseY, button);
+            return horizontalScrollBar.mouseClicked(event, isDoubleClick);
         }
 
-        return super.mouseReleased(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), button);
+        return super.mouseClicked(getMaskedMouseEvent(event), isDoubleClick);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (shouldShowVerticalBar() && verticalScrollBar.isDragging() && dragY != 0) {
-            return verticalScrollBar.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    public boolean mouseReleased(MouseButtonEvent event) {
+        var mouseX = event.x();
+        var mouseY = event.y();
+
+        if (shouldShowVerticalBar() && verticalScrollBar.isMouseOver(mouseX, mouseY)) {
+            return verticalScrollBar.mouseReleased(event);
         }
 
-        if (shouldShowHorizontalBar() && horizontalScrollBar.isDragging() && dragX != 0) {
-            return horizontalScrollBar.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        if (shouldShowHorizontalBar() && horizontalScrollBar.isMouseOver(mouseX, mouseY)) {
+            return horizontalScrollBar.mouseReleased(event);
         }
 
-        return super.mouseDragged(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), button, dragX, dragY);
+        return super.mouseReleased(getMaskedMouseEvent(event));
+    }
+
+    @Override
+    public boolean mouseDragged(MouseButtonEvent event, double nowMouseX, double nowMouseY) {
+        var mouseX = event.x();
+        var mouseY = event.y();
+        var deltaX = mouseX - event.x();
+        var deltaY = mouseY - event.y();
+
+        if (shouldShowVerticalBar() && verticalScrollBar.isDragging() && deltaY != 0) {
+            return verticalScrollBar.mouseDragged(event, nowMouseX, nowMouseY);
+        }
+
+        if (shouldShowHorizontalBar() && horizontalScrollBar.isDragging() && deltaX != 0) {
+            return horizontalScrollBar.mouseDragged(event, nowMouseX, nowMouseY);
+        }
+
+        var maskedNowMouseX = getMaskedX(nowMouseX);
+        var maskedNowMouseY = getMaskedY(nowMouseY);
+        return super.mouseDragged(getMaskedMouseEvent(event), maskedNowMouseX, maskedNowMouseY);
     }
 
     @Override
@@ -175,15 +205,15 @@ public class ScrollableViewport extends AbstractComposedComponent {
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean keyReleased(KeyEvent event) {
         if (shouldShowVerticalBar() && verticalScrollBar.isHoveredOrFocused()) {
-            return verticalScrollBar.keyReleased(keyCode, scanCode, modifiers);
+            return verticalScrollBar.keyReleased(event);
         }
 
         if (shouldShowHorizontalBar() && horizontalScrollBar.isHoveredOrFocused()) {
-            return horizontalScrollBar.keyReleased(keyCode, scanCode, modifiers);
+            return horizontalScrollBar.keyReleased(event);
         }
 
-        return super.keyReleased(keyCode, scanCode, modifiers);
+        return super.keyReleased(event);
     }
 }

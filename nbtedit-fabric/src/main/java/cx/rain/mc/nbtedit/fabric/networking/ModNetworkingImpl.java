@@ -45,27 +45,27 @@ public class ModNetworkingImpl implements IModNetworking {
 	}
 
 	private void serverHandle(BlockEntityRaytraceResultPacket packet, ServerPlayNetworking.Context context) {
-		context.player().getServer().execute(() -> NetworkServerHandler.handleBlockEntityResult(context.player(), packet));
+		context.player().server.execute(() -> NetworkServerHandler.handleBlockEntityResult(context.player(), packet));
 	}
 
 	private void serverHandle(EntityRaytraceResultPacket packet, ServerPlayNetworking.Context context) {
-		context.player().getServer().execute(() -> NetworkServerHandler.handleEntityResult(context.player(), packet));
+		context.player().server.execute(() -> NetworkServerHandler.handleEntityResult(context.player(), packet));
 	}
 
 	private void serverHandle(ItemStackRaytraceResultPacket packet, ServerPlayNetworking.Context context) {
-		context.player().getServer().execute(() -> NetworkServerHandler.handleItemStackResult(context.player(), packet));
+		context.player().server.execute(() -> NetworkServerHandler.handleItemStackResult(context.player(), packet));
 	}
 
 	private void serverHandle(BlockEntityEditingPacket packet, ServerPlayNetworking.Context context) {
-		context.player().getServer().execute(() -> NetworkServerHandler.saveBlockEntity(context.player(), packet));
+		context.player().server.execute(() -> NetworkServerHandler.saveBlockEntity(context.player(), packet));
 	}
 
 	private void serverHandle(EntityEditingPacket packet, ServerPlayNetworking.Context context) {
-		context.player().getServer().execute(() -> NetworkServerHandler.saveEntity(context.player(), packet));
+		context.player().server.execute(() -> NetworkServerHandler.saveEntity(context.player(), packet));
 	}
 
 	private void serverHandle(ItemStackEditingPacket packet, ServerPlayNetworking.Context context) {
-		context.player().getServer().execute(() -> NetworkServerHandler.saveItemStack(context.player(), packet));
+		context.player().server.execute(() -> NetworkServerHandler.saveItemStack(context.player(), packet));
 	}
 
 	@Override

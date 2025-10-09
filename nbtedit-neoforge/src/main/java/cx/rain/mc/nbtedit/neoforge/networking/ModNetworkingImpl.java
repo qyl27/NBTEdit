@@ -34,9 +34,9 @@ public class ModNetworkingImpl implements IModNetworking {
 		registrar.playToServer(EntityRaytraceResultPacket.TYPE, EntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
 		registrar.playToServer(ItemStackRaytraceResultPacket.TYPE, ItemStackRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
 
-		registrar.playBidirectional(BlockEntityEditingPacket.TYPE, BlockEntityEditingPacket.CODEC, ModNetworkingImpl::handle);
-		registrar.playBidirectional(EntityEditingPacket.TYPE, EntityEditingPacket.CODEC, ModNetworkingImpl::handle);
-		registrar.playBidirectional(ItemStackEditingPacket.TYPE, ItemStackEditingPacket.CODEC, ModNetworkingImpl::handle);
+		registrar.playBidirectional(BlockEntityEditingPacket.TYPE, BlockEntityEditingPacket.CODEC, ModNetworkingImpl::serverHandle, ModNetworkingImpl::clientHandle);
+		registrar.playBidirectional(EntityEditingPacket.TYPE, EntityEditingPacket.CODEC, ModNetworkingImpl::serverHandle, ModNetworkingImpl::clientHandle);
+		registrar.playBidirectional(ItemStackEditingPacket.TYPE, ItemStackEditingPacket.CODEC, ModNetworkingImpl::serverHandle, ModNetworkingImpl::clientHandle);
 	}
 
 	private static void clientHandle(RaytracePacket packet, IPayloadContext context) {
@@ -70,52 +70,43 @@ public class ModNetworkingImpl implements IModNetworking {
 		});
 	}
 
-	private static void handle(BlockEntityEditingPacket packet, IPayloadContext context) {
-		if (context.flow().isClientbound()) {
-			context.enqueueWork(() -> NetworkClientHandler.handleBlockEntityEditing(packet));
-			return;
-		}
+    private static void clientHandle(BlockEntityEditingPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> NetworkClientHandler.handleBlockEntityEditing(packet));
+    }
 
-		if (context.flow().isServerbound()) {
-			context.enqueueWork(() -> {
-				var player = context.player();
-				if (player instanceof ServerPlayer serverPlayer) {
-					NetworkServerHandler.saveBlockEntity(serverPlayer, packet);
-				}
-			});
-		}
+    private static void clientHandle(EntityEditingPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> NetworkClientHandler.handleEntityEditing(packet));
+    }
+
+    private static void clientHandle(ItemStackEditingPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> NetworkClientHandler.handleItemStackEditing(packet));
+    }
+
+    private static void serverHandle(BlockEntityEditingPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            var player = context.player();
+            if (player instanceof ServerPlayer serverPlayer) {
+                NetworkServerHandler.saveBlockEntity(serverPlayer, packet);
+            }
+        });
 	}
 
-	private static void handle(EntityEditingPacket packet, IPayloadContext context) {
-		if (context.flow().isClientbound()) {
-			context.enqueueWork(() -> NetworkClientHandler.handleEntityEditing(packet));
-			return;
-		}
-
-		if (context.flow().isServerbound()) {
-			context.enqueueWork(() -> {
-				var player = context.player();
-				if (player instanceof ServerPlayer serverPlayer) {
-					NetworkServerHandler.saveEntity(serverPlayer, packet);
-				}
-			});
-		}
+	private static void serverHandle(EntityEditingPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            var player = context.player();
+            if (player instanceof ServerPlayer serverPlayer) {
+                NetworkServerHandler.saveEntity(serverPlayer, packet);
+            }
+        });
 	}
 
-	private static void handle(ItemStackEditingPacket packet, IPayloadContext context) {
-		if (context.flow().isClientbound()) {
-			context.enqueueWork(() -> NetworkClientHandler.handleItemStackEditing(packet));
-			return;
-		}
-
-		if (context.flow().isServerbound()) {
-			context.enqueueWork(() -> {
-				var player = context.player();
-				if (player instanceof ServerPlayer serverPlayer) {
-					NetworkServerHandler.saveItemStack(serverPlayer, packet);
-				}
-			});
-		}
+	private static void serverHandle(ItemStackEditingPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            var player = context.player();
+            if (player instanceof ServerPlayer serverPlayer) {
+                NetworkServerHandler.saveItemStack(serverPlayer, packet);
+            }
+        });
 	}
 
 	public ModNetworkingImpl() {

@@ -3,6 +3,9 @@ package cx.rain.mc.nbtedit.gui.component;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -115,18 +118,18 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return IComposedComponent.super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        return IComposedComponent.super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        return IComposedComponent.super.mouseReleased(mouseX, mouseY, button);
+    public boolean mouseReleased(MouseButtonEvent event) {
+        return IComposedComponent.super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        return IComposedComponent.super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
+        return IComposedComponent.super.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override
@@ -135,18 +138,18 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return IComposedComponent.super.keyPressed(keyCode, scanCode, modifiers);
+    public boolean keyPressed(KeyEvent event) {
+        return IComposedComponent.super.keyPressed(event);
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return IComposedComponent.super.keyReleased(keyCode, scanCode, modifiers);
+    public boolean keyReleased(KeyEvent event) {
+        return IComposedComponent.super.keyReleased(event);
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        return IComposedComponent.super.charTyped(codePoint, modifiers);
+    public boolean charTyped(CharacterEvent event) {
+        return IComposedComponent.super.charTyped(event);
     }
 
     @Override

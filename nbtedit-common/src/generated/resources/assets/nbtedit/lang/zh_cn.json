@@ -45,7 +45,7 @@
   "gui.nbtedit.tooltip.preview_item.narration": "物品预览：",
   "gui.nbtedit.tooltip.preview_uuid": "【UUID预览】",
   "gui.nbtedit.tooltip.preview_uuid.narration": "UUID预览：",
-  "key.category.nbtedit": "游戏内NBT编辑器（重制版）",
+  "key.category.nbtedit.keys": "游戏内NBT编辑器（重制版）",
   "key.nbtedit.shortcut": "打开编辑器",
   "message.nbtedit.cannot_edit_other_player": "配置文件设置不允许编辑其他玩家",
   "message.nbtedit.editing.block_entity": "编辑方块实体（X：%1$s，Y：%2$s，Z：%3$s）",

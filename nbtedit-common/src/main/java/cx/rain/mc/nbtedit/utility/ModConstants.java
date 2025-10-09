@@ -1,8 +1,12 @@
 package cx.rain.mc.nbtedit.utility;
 
+import cx.rain.mc.nbtedit.NBTEdit;
+import net.minecraft.resources.ResourceLocation;
+
 public class ModConstants {
     // Translation keys here.
-    public static final String KEY_CATEGORY = "key.category.nbtedit";
+    public static final ResourceLocation KEY_CATEGORY_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "keys");
+    public static final String KEY_CATEGORY = "key.category.nbtedit.keys";
     public static final String KEY_NBTEDIT_SHORTCUT = "key.nbtedit.shortcut";
 
     public static final String MESSAGE_NOT_PLAYER = "message.nbtedit.not_a_player";

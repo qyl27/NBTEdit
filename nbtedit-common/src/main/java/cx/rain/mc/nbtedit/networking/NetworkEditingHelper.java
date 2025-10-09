@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class NetworkEditingHelper {
     public static void editBlockEntity(ServerPlayer player, BlockPos pos) {
-        player.getServer().execute(() -> {
+        player.server.execute(() -> {
             if (!NetworkingHelper.checkReadPermission(player)) {
                 return;
             }
@@ -41,13 +41,13 @@ public class NetworkEditingHelper {
                     .translatable(ModConstants.MESSAGE_EDITING_BLOCK_ENTITY, pos.getX(), pos.getY(), pos.getZ())
                     .withStyle(ChatFormatting.GREEN));
 
-            var tag = blockEntity.saveWithFullMetadata(player.getServer().registryAccess());
+            var tag = blockEntity.saveWithFullMetadata(player.server.registryAccess());
             NBTEditPlatform.getNetworking().sendTo(player, new BlockEntityEditingPacket(tag, NBTEditPlatform.getPermission().isReadOnly(player), pos));
         });
     }
 
     public static void editEntity(ServerPlayer player, UUID entityUuid) {
-        player.getServer().execute(() -> {
+        player.server.execute(() -> {
             if (!NetworkingHelper.checkReadPermission(player)) {
                 return;
             }
@@ -82,7 +82,7 @@ public class NetworkEditingHelper {
     }
 
     public static void editItemStack(ServerPlayer player, ItemStack stack) {
-        player.getServer().execute(() -> {
+        player.server.execute(() -> {
             if (!NetworkingHelper.checkReadPermission(player)) {
                 return;
             }

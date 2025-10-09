@@ -45,7 +45,7 @@ public class NetworkServerHandler {
 
         var tag = packet.tag();
 
-        var server = player.getServer();
+        var server = player.server;
         var level = player.level();
         server.execute(() -> {
             var blockEntity = level.getBlockEntity(pos);
@@ -94,7 +94,7 @@ public class NetworkServerHandler {
         var tag = packet.tag();
         var entityUuid = packet.uuid();
 
-        var server = player.getServer();
+        var server = player.server;
         var level = player.level();
         server.execute(() -> {
             var entity = level.getEntity(entityUuid);
@@ -175,7 +175,7 @@ public class NetworkServerHandler {
         var tag = packet.tag();
         var itemStack = packet.itemStack();
 
-        var server = player.getServer();
+        var server = player.server;
         server.execute(() -> {
             try {
                 var item = NBTEdit.getInstance().getRegistryContextSerializer().deserializeItemStack(tag);

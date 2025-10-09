@@ -45,7 +45,7 @@
   "gui.nbtedit.tooltip.preview_item.narration": "Item Preview: ",
   "gui.nbtedit.tooltip.preview_uuid": "[UUID Preview]",
   "gui.nbtedit.tooltip.preview_uuid.narration": "UUID Preview: ",
-  "key.category.nbtedit": "In-game NBTEdit Reborn",
+  "key.category.nbtedit.keys": "In-game NBTEdit Reborn",
   "key.nbtedit.shortcut": "Open the NBT editor",
   "message.nbtedit.cannot_edit_other_player": "Sorry, but you cannot edit other player due to mod config.",
   "message.nbtedit.editing.block_entity": "Editing BlockEntity (X: %1$s, Y: %2$s, Z: %3$s).",

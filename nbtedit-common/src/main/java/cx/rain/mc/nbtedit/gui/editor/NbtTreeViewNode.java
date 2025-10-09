@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -112,17 +113,17 @@ public class NbtTreeViewNode extends AbstractComponent {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        if (isMouseInsideSpoiler(mouseX, mouseY)) {
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+        if (isMouseInsideSpoiler(event.x(), event.y())) {
             node.setShowChildren(!node.shouldShowChildren());
             getParent().update(true);
         }
 
-        if (isMouseInsideText(mouseX, mouseY)) {
+        if (isMouseInsideText(event.x(), event.y())) {
             getParent().setFocused(this);
             getParent().update(true);
         }
 
-        super.onClick(mouseX, mouseY);
+        super.onClick(event, isDoubleClick);
     }
 }

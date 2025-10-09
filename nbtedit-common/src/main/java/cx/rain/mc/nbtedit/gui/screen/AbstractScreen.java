@@ -8,6 +8,9 @@ import cx.rain.mc.nbtedit.gui.window.IWindowHolder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -286,33 +289,33 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (hasMutexWindow()) {
             assert getMutexWindow() != null;
-            return getMutexWindow().mouseClicked(mouseX, mouseY, button);
+            return getMutexWindow().mouseClicked(event, isDoubleClick);
         }
 
-        return IWindowHolder.super.mouseClicked(mouseX, mouseY, button);
+        return IWindowHolder.super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         if (hasMutexWindow()) {
             assert getMutexWindow() != null;
-            return getMutexWindow().mouseReleased(mouseX, mouseY, button);
+            return getMutexWindow().mouseReleased(event);
         }
 
-        return IWindowHolder.super.mouseReleased(mouseX, mouseY, button);
+        return IWindowHolder.super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
         if (hasMutexWindow()) {
             assert getMutexWindow() != null;
-            return getMutexWindow().mouseDragged(mouseX, mouseY, button, dragX, dragY);
+            return getMutexWindow().mouseDragged(event, mouseX, mouseY);
         }
 
-        return IWindowHolder.super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return IWindowHolder.super.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override
@@ -326,33 +329,33 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         if (hasMutexWindow()) {
             assert getMutexWindow() != null;
-            return getMutexWindow().keyPressed(keyCode, scanCode, modifiers);
+            return getMutexWindow().keyPressed(event);
         }
 
-        return IWindowHolder.super.keyPressed(keyCode, scanCode, modifiers);
+        return IWindowHolder.super.keyPressed(event);
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean keyReleased(KeyEvent event) {
         if (hasMutexWindow()) {
             assert getMutexWindow() != null;
-            return getMutexWindow().keyReleased(keyCode, scanCode, modifiers);
+            return getMutexWindow().keyReleased(event);
         }
 
-        return IWindowHolder.super.keyReleased(keyCode, scanCode, modifiers);
+        return IWindowHolder.super.keyReleased(event);
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(CharacterEvent event) {
         if (hasMutexWindow()) {
             assert getMutexWindow() != null;
-            return getMutexWindow().charTyped(codePoint, modifiers);
+            return getMutexWindow().charTyped(event);
         }
 
-        return IWindowHolder.super.charTyped(codePoint, modifiers);
+        return IWindowHolder.super.charTyped(event);
     }
 
     public static void drawGrayishBackground(GuiGraphics guiGraphics) {

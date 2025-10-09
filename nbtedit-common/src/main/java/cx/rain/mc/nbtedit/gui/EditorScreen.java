@@ -16,6 +16,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.nbt.CollectionTag;
 import net.minecraft.nbt.CompoundTag;
@@ -382,14 +384,15 @@ public class EditorScreen extends AbstractScreen {
     private long lastClickTime = 0;
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (treeView.getFocusedChild() != null && Util.getMillis() - this.lastClickTime <= 250L) {
             onEdit();
             return true;
         }
 
         this.lastClickTime = Util.getMillis();
-        return super.mouseClicked(mouseX, mouseY, button);
+
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
@@ -399,7 +402,10 @@ public class EditorScreen extends AbstractScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
+        var keyCode = event.key();
+        var modifiers = event.modifiers();
+
         if (!hasWindow()) {
             if (keyCode == GLFW.GLFW_KEY_C && modifiers == GLFW.GLFW_MOD_CONTROL) {
                 if (getFocused() != null) {
@@ -462,12 +468,7 @@ public class EditorScreen extends AbstractScreen {
             }
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return super.keyReleased(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     /// </editor-fold>
