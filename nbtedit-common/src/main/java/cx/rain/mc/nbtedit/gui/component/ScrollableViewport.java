@@ -73,16 +73,16 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        var maskedMouseX = mouseX > getX() && mouseX < (getX() + getWidth()) ? mouseX - getX() : -1;
-        var maskedMouseY = mouseY > getY() && mouseY < (getY() + getHeight()) ? mouseY - getY() : -1;
-
         var maxX = getX() + getWidth() - (shouldShowVerticalBar() ? getScrollBarWidth() : 0);
         var maxY = getY() + getHeight() - (shouldShowHorizontalBar() ? getScrollBarWidth() : 0);
         guiGraphics.enableScissor(getX(), getY(), maxX, maxY);
         guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(getX() - getScrollXOffset(), getY() - getScrollYOffset());
 
-        super.renderWidget(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
+        for (var c : getChildren()) {
+            c.setX(c.getX() - getScrollXOffset());
+            c.setY(c.getY() - getScrollYOffset());
+        }
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
 
         guiGraphics.pose().popMatrix();
         guiGraphics.disableScissor();
@@ -124,21 +124,6 @@ public class ScrollableViewport extends AbstractComposedComponent {
         }
     }
 
-    private double getMaskedX(double rawX) {
-        return rawX - getX() + getScrollXOffset();
-    }
-
-    private double getMaskedY(double rawY) {
-        return rawY - getY() + getScrollYOffset();
-    }
-
-    private MouseButtonEvent getMaskedMouseEvent(MouseButtonEvent rawEvent) {
-        var mouseX = rawEvent.x();
-        var mouseY = rawEvent.y();
-        var button = rawEvent.buttonInfo();
-        return new MouseButtonEvent(getMaskedX(mouseX), getMaskedY(mouseY), button);
-    }
-
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         var mouseX = event.x();
@@ -152,7 +137,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
             return horizontalScrollBar.mouseClicked(event, isDoubleClick);
         }
 
-        return super.mouseClicked(getMaskedMouseEvent(event), isDoubleClick);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
@@ -168,7 +153,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
             return horizontalScrollBar.mouseReleased(event);
         }
 
-        return super.mouseReleased(getMaskedMouseEvent(event));
+        return super.mouseReleased(event);
     }
 
     @Override
@@ -186,9 +171,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
             return horizontalScrollBar.mouseDragged(event, nowMouseX, nowMouseY);
         }
 
-        var maskedNowMouseX = getMaskedX(nowMouseX);
-        var maskedNowMouseY = getMaskedY(nowMouseY);
-        return super.mouseDragged(getMaskedMouseEvent(event), maskedNowMouseX, maskedNowMouseY);
+        return super.mouseDragged(event, nowMouseX, nowMouseY);
     }
 
     @Override

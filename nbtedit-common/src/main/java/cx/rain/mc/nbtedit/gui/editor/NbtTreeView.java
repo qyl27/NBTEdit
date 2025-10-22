@@ -75,7 +75,10 @@ public class NbtTreeView extends AbstractComposedComponent {
 
     public void update(boolean callParent) {
         if (callParent) {
-            getParent().update();
+            var parent = getParent();
+            if (parent != null) {
+                getParent().update();
+            }
         } else {
             update();
         }

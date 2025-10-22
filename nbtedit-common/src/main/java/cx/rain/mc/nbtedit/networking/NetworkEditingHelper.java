@@ -5,7 +5,9 @@ import cx.rain.mc.nbtedit.NBTEditPlatform;
 import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
+import cx.rain.mc.nbtedit.utility.LoggingHelper;
 import cx.rain.mc.nbtedit.utility.ModConstants;
+import cx.rain.mc.nbtedit.utility.RegistryContextSerializeHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -70,8 +72,7 @@ public class NetworkEditingHelper {
                     .translatable(ModConstants.MESSAGE_EDITING_ENTITY, entityUuid.toString())
                     .withStyle(ChatFormatting.GREEN));
 
-            var serializer = NBTEdit.getInstance().getRegistryContextSerializer();
-            var output = serializer.createTagValueOutput();
+            var output = RegistryContextSerializeHelper.createTagValueOutput(player.registryAccess());
             if (entity instanceof Player) {
                 entity.saveWithoutId(output);
             } else {
@@ -99,7 +100,13 @@ public class NetworkEditingHelper {
                     .translatable(ModConstants.MESSAGE_EDITING_ITEM_STACK, stack.getDisplayName().getString())
                     .withStyle(ChatFormatting.GREEN));
 
-            var tag = NBTEdit.getInstance().getRegistryContextSerializer().serializeItemStack(stack);
+            var optional = RegistryContextSerializeHelper.serializeItemStack(player.registryAccess(), stack);
+            if (optional.isEmpty()) {
+                LoggingHelper.errorSerializingItemStack(stack);
+                return;
+            }
+
+            var tag = optional.get();
             NBTEditPlatform.getNetworking().sendTo(player, new ItemStackEditingPacket(tag, NBTEditPlatform.getPermission().isReadOnly(player), stack));
         });
     }

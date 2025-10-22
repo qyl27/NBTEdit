@@ -9,6 +9,7 @@ import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
 import cx.rain.mc.nbtedit.utility.LoggingHelper;
 import cx.rain.mc.nbtedit.utility.ModConstants;
+import cx.rain.mc.nbtedit.utility.RegistryContextSerializeHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
@@ -51,7 +52,7 @@ public class NetworkServerHandler {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
                 try {
-                    var input = NBTEdit.getInstance().getRegistryContextSerializer().createTagValueInput(tag);
+                    var input = RegistryContextSerializeHelper.createTagValueInput(server.registryAccess(), tag);
                     blockEntity.loadWithComponents(input);
                     blockEntity.setChanged();	// Ensure changes gets saved to disk later on. (qyl27: In MCP it is markDirty.)
                     if (blockEntity.hasLevel() && blockEntity.getLevel() instanceof ServerLevel) {
@@ -114,7 +115,7 @@ public class NetworkServerHandler {
                         prevGameMode = ((ServerPlayer) entity).gameMode.getGameModeForPlayer();
                     }
 
-                    var input = NBTEdit.getInstance().getRegistryContextSerializer().createTagValueInput(tag);
+                    var input = RegistryContextSerializeHelper.createTagValueInput(server.registryAccess(), tag);
                     entity.load(input);
                     NBTEdit.getInstance().getLogger().info("Player {} edited the tag of Entity with UUID {} .",
                             player.getName().getString(), entityUuid);
@@ -178,7 +179,8 @@ public class NetworkServerHandler {
         var server = player.server;
         server.execute(() -> {
             try {
-                var item = NBTEdit.getInstance().getRegistryContextSerializer().deserializeItemStack(tag);
+                var optional = RegistryContextSerializeHelper.deserializeItemStack(server.registryAccess(), tag);
+                var item = optional.orElseThrow();
                 player.setItemInHand(InteractionHand.MAIN_HAND, item);
 
                 NBTEdit.getInstance().getLogger().info("Player {} successfully edited the tag of a ItemStack named {}.",
