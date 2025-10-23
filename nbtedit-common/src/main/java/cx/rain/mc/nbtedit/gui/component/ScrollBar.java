@@ -2,19 +2,17 @@ package cx.rain.mc.nbtedit.gui.component;
 
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
 public class ScrollBar extends AbstractComponent {
-    private static final WidgetSprites BACKGROUND_SPRITES = new WidgetSprites(ResourceLocation.withDefaultNamespace("widget/text_field"), ResourceLocation.withDefaultNamespace("widget/text_field_highlighted"));
     private static final ResourceLocation SCROLLER_SPRITE = ResourceLocation.withDefaultNamespace("widget/scroller");
+    private static final ResourceLocation SCROLLER_BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("widget/scroller_background");
 
     private final int scrollUnit = getMinecraft().font.lineHeight + 2;
 
@@ -27,7 +25,7 @@ public class ScrollBar extends AbstractComponent {
      * (In pixels.)
      */
     private int scrollAmount = 0;
-    private boolean dragging = false;
+    private boolean scrolling = false;
 
     public ScrollBar(int x, int y, int width, int height, IScrollHandler toScroll, int contentLength) {
         this(x, y, width, height, toScroll, contentLength, false);
@@ -88,7 +86,7 @@ public class ScrollBar extends AbstractComponent {
     }
 
     private int getMaxScrollAmount() {
-        return contentLength - getPrimaryLength();
+        return Math.max(0, contentLength - getPrimaryLength());
     }
 
     public int getScrollAmount() {
@@ -106,8 +104,7 @@ public class ScrollBar extends AbstractComponent {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        ResourceLocation resourceLocation = BACKGROUND_SPRITES.get(false, false);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourceLocation, getX(), getY(), getWidth(), getHeight());
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight());
 
         var barLength = this.getScrollBarLength();
         var barOffset = (int) (getScrollRate() * (getPrimaryLength() - barLength));
@@ -124,42 +121,36 @@ public class ScrollBar extends AbstractComponent {
         narrationElementOutput.add(NarratedElementType.TITLE, Component.translatable(ModConstants.GUI_TITLE_SCROLL_BAR_NARRATION));
     }
 
-    public boolean isDragging() {
-        return dragging;
+    public boolean isScrolling() {
+        return scrolling;
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (isMouseOver(mouseX, mouseY)) {
-            dragging = true;
-            return true;
-        }
-
-        return super.mouseClicked(mouseX, mouseY, button);
+    public void onClick(double mouseX, double mouseY) {
+        scrolling = true;
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-            dragging = false;
-        }
-
-        return super.mouseReleased(mouseX, mouseY, button);
+    public void onRelease(double mouseX, double mouseY) {
+        scrolling = false;
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (isActive() && dragging) {
-            var mousePrimary = isVertical() ? mouseY : mouseX;
-            var dragPrimary = isVertical() ? dragY : dragX;
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (scrolling) {
+            // Treat all value as primary axis.
+            var delta = isVertical() ? deltaY : deltaX;
+            var currentMouse = isVertical() ? mouseY : mouseX;
+            var lowBound = getPrimaryStart();
+            var highBound = getPrimaryStart() + getPrimaryLength();
 
-            if (mousePrimary < (double) getPrimaryStart()) {
-                this.addScrollAmount(-scrollUnit);
-            } else if (mousePrimary > (double)(getPrimaryStart() + getPrimaryLength())) {
-                this.addScrollAmount(scrollUnit);
+            if (currentMouse < (double) lowBound) {
+                this.setScrollAmount(0);
+            } else if (currentMouse > (double) highBound) {
+                this.setScrollAmount(getMaxScrollAmount());
             } else {
                 var d = Mth.clamp(this.getMaxScrollAmount() / (getPrimaryLength() - getScrollBarLength()), 0, 1);
-                this.addScrollAmount((int) (dragPrimary * d));
+                this.addScrollAmount((int) (delta * d));
             }
             return true;
         }
@@ -169,6 +160,10 @@ public class ScrollBar extends AbstractComponent {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (!isActive()) {
+            return false;
+        }
+
         var scrollPrimary = isVertical() ? scrollY : scrollX;
         addScrollAmount((int) (scrollUnit * -scrollPrimary));
 

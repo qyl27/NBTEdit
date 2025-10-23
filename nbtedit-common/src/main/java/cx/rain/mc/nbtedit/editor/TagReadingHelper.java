@@ -1,7 +1,7 @@
 package cx.rain.mc.nbtedit.editor;
 
-import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.editor.tag.TagParseHelper;
+import cx.rain.mc.nbtedit.utility.RegistryContextSerializeHelper;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -17,15 +17,8 @@ public class TagReadingHelper {
     public static @Nullable ItemStack tryReadItem(Player player, @Nullable Tag tag) {
         if (tag instanceof CompoundTag compoundTag) {
             try {
-                var optional = ItemStack.CODEC
-                        .parse(player.registryAccess().createSerializationContext(NbtOps.INSTANCE), compoundTag)
-                        .result();
-                if (optional.isPresent()) {
-                    var itemStack = optional.get();
-                    if (!itemStack.isEmpty()) {
-                        return itemStack;
-                    }
-                }
+                return RegistryContextSerializeHelper.deserializeItemStack(player.registryAccess(), compoundTag)
+                        .orElse(null);
             } catch (Exception ignored) {
             }
         }
@@ -47,7 +40,7 @@ public class TagReadingHelper {
     public static @Nullable Component tryReadText(Player player, @Nullable Tag tag) {
         if (tag instanceof StringTag stringTag) {
             return stringTag.asString()
-                    .flatMap(s -> NBTEdit.getInstance().getRegistryContextSerializer().deserializeComponent(s))
+                    .flatMap(s -> RegistryContextSerializeHelper.deserializeComponent(player.registryAccess(), s))
                     .orElse(null);
         }
 

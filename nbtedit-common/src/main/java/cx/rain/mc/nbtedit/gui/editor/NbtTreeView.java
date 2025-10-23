@@ -4,7 +4,6 @@ import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.gui.component.AbstractComposedComponent;
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -75,7 +74,10 @@ public class NbtTreeView extends AbstractComposedComponent {
 
     public void update(boolean callParent) {
         if (callParent) {
-            getParent().update();
+            var parent = getParent();
+            if (parent != null) {
+                getParent().update();
+            }
         } else {
             update();
         }

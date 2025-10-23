@@ -5,8 +5,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 public abstract class AbstractComponent extends AbstractWidget implements IComponent {
 
     @Nullable
@@ -28,10 +26,5 @@ public abstract class AbstractComponent extends AbstractWidget implements ICompo
     @Override
     public void setParent(@Nullable IComposedComponent parent) {
         this.parent = parent;
-    }
-
-    @Override
-    public void visitWidgets(Consumer<AbstractWidget> consumer) {
-        consumer.accept(this);
     }
 }

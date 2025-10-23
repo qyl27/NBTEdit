@@ -1,14 +1,11 @@
 package cx.rain.mc.nbtedit.gui.editor;
 
-import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.editor.EditorButton;
 import cx.rain.mc.nbtedit.gui.component.ButtonComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import java.time.Duration;
 
@@ -48,7 +45,7 @@ public class EditorButtonComponent extends ButtonComponent {
 
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, button.getSprite(), getX(), getY(), getWidth(), getHeight());
 
-        if (!isActive()) {
+        if (isActive()) {
             graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x80000000);
         }
     }
