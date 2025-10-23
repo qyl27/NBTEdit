@@ -2,6 +2,7 @@ package cx.rain.mc.nbtedit.gui.component;
 
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.KeyEvent;
@@ -142,18 +143,21 @@ public class ScrollBar extends AbstractComponent {
     }
 
     @Override
-    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
-        if (isActive() && scrolling) {
-            var mousePrimary = isVertical() ? mouseY : mouseX;
-            var dragPrimary = isVertical() ? event.y() : event.x();
+    public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+        if (scrolling) {
+            // Treat all value as primary axis.
+            var delta = isVertical() ? deltaY : deltaX;
+            var currentMouse = isVertical() ? event.y() : event.x();
+            var lowBound = getPrimaryStart();
+            var highBound = getPrimaryStart() + getPrimaryLength();
 
-            if (mousePrimary < (double) getPrimaryStart()) {
-                this.addScrollAmount(-scrollUnit);
-            } else if (mousePrimary > (double)(getPrimaryStart() + getPrimaryLength())) {
-                this.addScrollAmount(scrollUnit);
+            if (currentMouse < (double) lowBound) {
+                this.setScrollAmount(0);
+            } else if (currentMouse > (double) highBound) {
+                this.setScrollAmount(getMaxScrollAmount());
             } else {
                 var d = Mth.clamp(this.getMaxScrollAmount() / (getPrimaryLength() - getScrollBarLength()), 0, 1);
-                this.addScrollAmount((int) (dragPrimary * d));
+                this.addScrollAmount((int) (delta * d));
             }
             return true;
         }
@@ -163,7 +167,7 @@ public class ScrollBar extends AbstractComponent {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (!isVisible()) {
+        if (!isActive()) {
             return false;
         }
 
