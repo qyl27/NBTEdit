@@ -65,9 +65,28 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         return height;
     }
 
+    // Screen is always visible, active and hovered.
     @Override
     public boolean isHovered() {
         return true;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return true;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+    }
+
+    @Override
+    public boolean isActive() {
+        return true;
+    }
+
+    @Override
+    public void setActive(boolean active) {
     }
 
     /// </editor-fold>

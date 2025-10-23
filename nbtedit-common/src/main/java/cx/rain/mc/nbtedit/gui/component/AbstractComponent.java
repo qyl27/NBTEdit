@@ -39,12 +39,12 @@ public abstract class AbstractComponent extends AbstractWidget implements ICompo
     }
 
     @Override
-    public boolean isDisabled() {
-        return !active;
+    public boolean isActive() {
+        return active;
     }
 
     @Override
-    public void setDisabled(boolean disabled) {
-        this.active = !disabled;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

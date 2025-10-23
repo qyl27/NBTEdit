@@ -55,12 +55,12 @@ public interface IComponent extends Renderable, GuiEventListener, LayoutElement,
     boolean isVisible();
     void setVisible(boolean visible);
 
-    boolean isDisabled();
-    void setDisabled(boolean disabled);
+    boolean isActive();
+    void setActive(boolean active);
 
     @Override
     default boolean isMouseOver(double mouseX, double mouseY) {
-        if (!isDisabled() && isVisible()) {
+        if (isActive() && isVisible()) {
             return mouseX > getX() && mouseY > getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
         }
         return false;
