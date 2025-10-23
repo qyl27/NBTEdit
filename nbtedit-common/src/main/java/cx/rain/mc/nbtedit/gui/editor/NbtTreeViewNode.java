@@ -71,6 +71,8 @@ public class NbtTreeViewNode extends AbstractComponent {
                 && getParent().getFocusedNode() == this.getNode();
         var isTextHover = isMouseInsideText(mouseX, mouseY);
         var isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);
+        this.isHovered = isTextHover || isSpoilerHover;
+
         var color = isSelected ? 0xFFE0E0E0 : isTextHover ? 0xFFFFFFA0 : (node.hasParent()) ? 0xFFE0E0E0 : 0xFFA0A0A0;
 
         if (isSelected) {
