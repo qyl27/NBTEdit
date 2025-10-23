@@ -53,7 +53,7 @@ public class EditorScreen extends AbstractScreen {
         width = minecraft.getWindow().getGuiScaledWidth();
         height = minecraft.getWindow().getGuiScaledHeight();
 
-        treeViewport = new ScrollableViewport(0, 40, width, height - 76, 15);
+        treeViewport = new ScrollableViewport(0, 40, width, height - 76);
         treeView = new NbtTreeView(tree, 0, 0, v -> updateButtons());
         treeViewport.addChild(treeView);
         addChild(treeViewport);
