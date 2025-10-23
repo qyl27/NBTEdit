@@ -130,14 +130,14 @@ public class ScrollBar extends AbstractComponent {
 
     @Override
     public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
-        if (event.buttonInfo().isLeft()) {
+        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             scrolling = true;
         }
     }
 
     @Override
     public void onRelease(MouseButtonEvent event) {
-        if (event.buttonInfo().isLeft()) {
+        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             scrolling = false;
         }
     }
