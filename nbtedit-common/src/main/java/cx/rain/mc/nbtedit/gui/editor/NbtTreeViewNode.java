@@ -10,7 +10,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -18,15 +17,12 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
 
 public class NbtTreeViewNode extends AbstractComponent {
-    public static final ResourceLocation WIDGET_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "textures/gui/widgets.png");
-
     public static final ResourceLocation ARROW_RIGHT = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_right");
     public static final ResourceLocation ARROW_DOWN = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_down");
     public static final ResourceLocation ARROW_RIGHT_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_right_highlighted");
     public static final ResourceLocation ARROW_DOWN_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_down_highlighted");
 
-    private final NbtTreeView treeView;
+    private final @NotNull NbtTreeView treeView;
     private final NbtTree.Node<?> node;
 
     public NbtTreeViewNode(int x, int y, NbtTree.Node<?> node, @NotNull NbtTreeView parent) {
@@ -47,7 +43,7 @@ public class NbtTreeViewNode extends AbstractComponent {
         setTooltipDelay(Duration.ofMillis(200));
     }
 
-    public NbtTreeView getParent() {
+    public @NotNull NbtTreeView getParent() {
         return treeView;
     }
 
@@ -74,6 +70,8 @@ public class NbtTreeViewNode extends AbstractComponent {
                 && getParent().getFocusedNode() == this.getNode();
         var isTextHover = isMouseInsideText(mouseX, mouseY);
         var isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);
+        this.isHovered = isTextHover || isSpoilerHover;
+
         var color = isSelected ? 0xFFE0E0E0 : isTextHover ? 0xFFFFFFA0 : (node.hasParent()) ? 0xFFE0E0E0 : 0xFFA0A0A0;
 
         if (isSelected) {

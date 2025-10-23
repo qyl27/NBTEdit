@@ -6,6 +6,7 @@ import cx.rain.mc.nbtedit.editor.tag.TagParseHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 
 import java.util.UUID;
@@ -24,6 +25,14 @@ public class LoggingHelper {
         if (isDebug()) {
             getLogger().debug("Runtime error while parsing tag.\nData: {}\nException: {}.",
                     TagParseHelper.getAsString(tag), new RuntimeException(ex));
+        }
+    }
+
+    public static void errorSerializingItemStack(ItemStack stack) {
+        getLogger().warn("Item stack couldn't be serialized. It must be a bug.");
+        if (isDebug()) {
+            getLogger().debug("Item stack serialize failed, strange.\nItem: {}.",
+                    stack.toString());
         }
     }
 

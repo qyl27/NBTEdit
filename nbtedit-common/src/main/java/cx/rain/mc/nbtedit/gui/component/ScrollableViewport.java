@@ -1,9 +1,9 @@
 package cx.rain.mc.nbtedit.gui.component;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 
 public class ScrollableViewport extends AbstractComposedComponent {
 
@@ -14,6 +14,10 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     private int contentWidth = 0;
     private int contentHeight = 0;
+
+    public ScrollableViewport(int x, int y, int width, int height) {
+        this(x, y, width, height, AbstractScrollArea.SCROLLBAR_WIDTH);
+    }
 
     public ScrollableViewport(int x, int y, int width, int height, int scrollBarWidth) {
         super(x, y, width, height, Component.empty());
@@ -71,19 +75,20 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        var maskedMouseX = mouseX > getX() && mouseX < (getX() + getWidth()) ? mouseX - getX() : -1;
-        var maskedMouseY = mouseY > getY() && mouseY < (getY() + getHeight()) ? mouseY - getY() : -1;
+        var maskedMouseX = (int) getMaskedX(mouseX);
+        var maskedMouseY = (int) getMaskedY(mouseY);
 
         var maxX = getX() + getWidth() - (shouldShowVerticalBar() ? getScrollBarWidth() : 0);
         var maxY = getY() + getHeight() - (shouldShowHorizontalBar() ? getScrollBarWidth() : 0);
-        guiGraphics.enableScissor(getX(), getY(), maxX, maxY);
+
         guiGraphics.pose().pushMatrix();
+        guiGraphics.enableScissor(getX(), getY(), maxX, maxY);
         guiGraphics.pose().translate(getX() - getScrollXOffset(), getY() - getScrollYOffset());
 
         super.renderWidget(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
 
-        guiGraphics.pose().popMatrix();
         guiGraphics.disableScissor();
+        guiGraphics.pose().popMatrix();
 
         if (shouldShowVerticalBar()) {
             verticalScrollBar.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -122,6 +127,14 @@ public class ScrollableViewport extends AbstractComposedComponent {
         }
     }
 
+    private double getMaskedX(double rawX) {
+        return rawX - getX() + getScrollXOffset();
+    }
+
+    private double getMaskedY(double rawY) {
+        return rawY - getY() + getScrollYOffset();
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (shouldShowVerticalBar() && verticalScrollBar.isMouseOver(mouseX, mouseY)) {
@@ -132,7 +145,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
             return horizontalScrollBar.mouseClicked(mouseX, mouseY, button);
         }
 
-        return super.mouseClicked(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), button);
+        return super.mouseClicked(getMaskedX(mouseX), getMaskedY(mouseY), button);
     }
 
     @Override
@@ -145,20 +158,20 @@ public class ScrollableViewport extends AbstractComposedComponent {
             return horizontalScrollBar.mouseReleased(mouseX, mouseY, button);
         }
 
-        return super.mouseReleased(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), button);
+        return super.mouseReleased(getMaskedX(mouseX), getMaskedY(mouseY), button);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (shouldShowVerticalBar() && verticalScrollBar.isDragging() && dragY != 0) {
-            return verticalScrollBar.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (shouldShowVerticalBar() && verticalScrollBar.isScrolling() && deltaY != 0) {
+            return verticalScrollBar.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
         }
 
-        if (shouldShowHorizontalBar() && horizontalScrollBar.isDragging() && dragX != 0) {
-            return horizontalScrollBar.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        if (shouldShowHorizontalBar() && horizontalScrollBar.isScrolling() && deltaX != 0) {
+            return horizontalScrollBar.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
         }
 
-        return super.mouseDragged(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), button, dragX, dragY);
+        return super.mouseDragged(getMaskedX(mouseX), getMaskedY(mouseY), button, deltaX, deltaY);
     }
 
     @Override

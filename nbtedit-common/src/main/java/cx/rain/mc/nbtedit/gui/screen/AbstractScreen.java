@@ -62,6 +62,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         return height;
     }
 
+    // Screen is always hovered.
     @Override
     public boolean isHovered() {
         return true;

@@ -26,7 +26,6 @@ public interface IComponent extends Renderable, GuiEventListener, LayoutElement,
     }
 
     IComposedComponent getParent();
-
     void setParent(@Nullable IComposedComponent parent);
 
     boolean isHovered();
