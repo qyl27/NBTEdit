@@ -1,11 +1,11 @@
 package cx.rain.mc.nbtedit.gui.component;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 
 public class ScrollableViewport extends AbstractComposedComponent {
 
@@ -16,6 +16,10 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     private int contentWidth = 0;
     private int contentHeight = 0;
+
+    public ScrollableViewport(int x, int y, int width, int height) {
+        this(x, y, width, height, AbstractScrollArea.SCROLLBAR_WIDTH);
+    }
 
     public ScrollableViewport(int x, int y, int width, int height, int scrollBarWidth) {
         super(x, y, width, height, Component.empty());
@@ -163,11 +167,11 @@ public class ScrollableViewport extends AbstractComposedComponent {
         var deltaX = mouseX - event.x();
         var deltaY = mouseY - event.y();
 
-        if (shouldShowVerticalBar() && verticalScrollBar.isDragging() && deltaY != 0) {
+        if (shouldShowVerticalBar() && verticalScrollBar.isScrolling() && deltaY != 0) {
             return verticalScrollBar.mouseDragged(event, nowMouseX, nowMouseY);
         }
 
-        if (shouldShowHorizontalBar() && horizontalScrollBar.isDragging() && deltaX != 0) {
+        if (shouldShowHorizontalBar() && horizontalScrollBar.isScrolling() && deltaX != 0) {
             return horizontalScrollBar.mouseDragged(event, nowMouseX, nowMouseY);
         }
 

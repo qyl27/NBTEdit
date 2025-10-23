@@ -26,7 +26,6 @@ public interface IComponent extends Renderable, GuiEventListener, LayoutElement,
     }
 
     IComposedComponent getParent();
-
     void setParent(@Nullable IComposedComponent parent);
 
     boolean isHovered();
@@ -51,5 +50,19 @@ public interface IComponent extends Renderable, GuiEventListener, LayoutElement,
 
     @Override
     default void updateNarration(NarrationElementOutput narrationElementOutput) {
+    }
+
+    boolean isVisible();
+    void setVisible(boolean visible);
+
+    boolean isDisabled();
+    void setDisabled(boolean disabled);
+
+    @Override
+    default boolean isMouseOver(double mouseX, double mouseY) {
+        if (!isDisabled() && isVisible()) {
+            return mouseX > getX() && mouseY > getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
+        }
+        return false;
     }
 }
