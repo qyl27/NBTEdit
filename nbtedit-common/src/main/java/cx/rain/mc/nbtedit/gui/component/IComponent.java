@@ -51,18 +51,4 @@ public interface IComponent extends Renderable, GuiEventListener, LayoutElement,
     @Override
     default void updateNarration(NarrationElementOutput narrationElementOutput) {
     }
-
-    boolean isVisible();
-    void setVisible(boolean visible);
-
-    boolean isActive();
-    void setActive(boolean active);
-
-    @Override
-    default boolean isMouseOver(double mouseX, double mouseY) {
-        if (isActive() && isVisible()) {
-            return mouseX > getX() && mouseY > getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
-        }
-        return false;
-    }
 }

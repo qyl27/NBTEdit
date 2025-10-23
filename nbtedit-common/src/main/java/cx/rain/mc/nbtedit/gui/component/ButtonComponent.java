@@ -23,26 +23,6 @@ public class ButtonComponent extends Button implements IComponent {
         this.parent = parent;
     }
 
-    @Override
-    public boolean isVisible() {
-        return visible;
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     public static Builder getBuilder(Component message, OnPress onPress) {
         return new Builder(message, onPress);
     }

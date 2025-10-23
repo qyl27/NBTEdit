@@ -27,24 +27,4 @@ public abstract class AbstractComponent extends AbstractWidget implements ICompo
     public void setParent(@Nullable IComposedComponent parent) {
         this.parent = parent;
     }
-
-    @Override
-    public boolean isVisible() {
-        return visible;
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 }
