@@ -10,7 +10,6 @@ plugins {
 def ENV = System.getenv()
 
 var publishVersion = project.mod_version
-publishVersion += "+mc${project.minecraft_version}"
 var mavenVersion = publishVersion
 if (!ENV.MOD_RELEASE) {
     mavenVersion += '-SNAPSHOT'
