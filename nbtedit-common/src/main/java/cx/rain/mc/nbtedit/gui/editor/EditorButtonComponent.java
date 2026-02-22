@@ -46,7 +46,7 @@ public class EditorButtonComponent extends ButtonComponent {
 
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, button.getSprite(), getX(), getY(), getWidth(), getHeight());
 
-        if (isActive()) {
+        if (!isActive()) {
             guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x80000000);
         }
     }
