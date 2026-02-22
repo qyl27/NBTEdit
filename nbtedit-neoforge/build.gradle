@@ -56,7 +56,7 @@ unifiedPublishing {
     project {
         displayName = "NBTEdit NeoForge ${project.minecraft_version}-${project.mod_version}"
         version = publishVersion
-        gameVersions = [project.minecraft_version, '1.21.9']
+        gameVersions = [project.minecraft_version]
         gameLoaders = ['neoforge']
         releaseType = 'release'
 
