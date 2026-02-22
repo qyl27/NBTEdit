@@ -1,9 +1,11 @@
 package cx.rain.mc.nbtedit.gui.component;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public class ButtonComponent extends Button implements IComponent {
     @Nullable
@@ -21,6 +23,13 @@ public class ButtonComponent extends Button implements IComponent {
     @Override
     public void setParent(@Nullable IComposedComponent parent) {
         this.parent = parent;
+    }
+
+    @Override
+    protected void renderContents(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        renderDefaultSprite(guiGraphics);
+        var textCollector = guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.TOOLTIP_AND_CURSOR);
+        renderDefaultLabel(textCollector);
     }
 
     public static Builder getBuilder(Component message, OnPress onPress) {

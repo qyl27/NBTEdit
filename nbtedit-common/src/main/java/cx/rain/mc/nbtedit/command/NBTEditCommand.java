@@ -4,7 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.NBTEditPlatform;
-import cx.rain.mc.nbtedit.api.command.ModPermissions;
+import cx.rain.mc.nbtedit.api.command.ModPermission;
 import cx.rain.mc.nbtedit.networking.NetworkEditingHelper;
 import com.mojang.brigadier.context.CommandContext;
 import cx.rain.mc.nbtedit.networking.packet.s2c.RaytracePacket;
@@ -18,7 +18,7 @@ import static net.minecraft.commands.Commands.literal;
 public class NBTEditCommand {
 
     public static final LiteralArgumentBuilder<CommandSourceStack> NBTEDIT = literal("nbtedit")
-            .requires(source -> NBTEditPlatform.getPermission().hasPermission(source, ModPermissions.USE))
+            .requires(source -> NBTEditPlatform.getPermission().hasPermission(source, ModPermission.USE))
             .executes(NBTEditCommand::onUse)
             .then(argument("entity", EntityArgument.entity())
                     .executes(NBTEditCommand::onEntity))

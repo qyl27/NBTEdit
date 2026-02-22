@@ -1,7 +1,8 @@
 package cx.rain.mc.nbtedit.neoforge.config;
 
-import cx.rain.mc.nbtedit.api.command.ModPermissions;
+import cx.rain.mc.nbtedit.api.command.ModPermission;
 import cx.rain.mc.nbtedit.api.config.IModConfig;
+import net.minecraft.server.permissions.PermissionLevel;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ public class ModConfigImpl implements IModConfig {
 
     public static ModConfigSpec.BooleanValue DEBUG;
 
-    public static Map<ModPermissions, ModConfigSpec.ConfigValue<Integer>> PERMISSION_LEVELS = new HashMap<>();
+    public static Map<ModPermission, ModConfigSpec.ConfigValue<Integer>> PERMISSION_LEVELS = new HashMap<>();
 
     static {
         var builder = new ModConfigSpec.Builder();
@@ -24,11 +25,11 @@ public class ModConfigImpl implements IModConfig {
                 .comment("Enable debug logs. Necessary if you are reporting bugs.")
                 .define("debug", false);
 
-        builder.comment("Permission node levels. Like vanilla, should in 0 ~ 5 range.")
+        builder.comment("Override the default permission levels. Like vanilla, should in 0 ~ 4 range.")
                 .push("permission");
 
-        for (var p : ModPermissions.values()) {
-            var spec = builder.define(p.getName(), p.getDefaultLevel());
+        for (var p : ModPermission.values()) {
+            var spec = builder.defineInRange(p.getNodeName(), p.getDefaultLevel().id(), 0, 4);
             PERMISSION_LEVELS.put(p, spec);
         }
 
@@ -41,5 +42,11 @@ public class ModConfigImpl implements IModConfig {
     @Override
     public boolean isDebug() {
         return DEBUG.get();
+    }
+
+    @Override
+    public PermissionLevel getOverriddenPermissionLevel(ModPermission permission) {
+        var level = PERMISSION_LEVELS.get(permission).get();
+        return PermissionLevel.byId(level);
     }
 }

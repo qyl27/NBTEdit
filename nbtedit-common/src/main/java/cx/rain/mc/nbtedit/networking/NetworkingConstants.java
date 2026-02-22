@@ -1,19 +1,19 @@
 package cx.rain.mc.nbtedit.networking;
 
-import cx.rain.mc.nbtedit.NBTEdit;
-import net.minecraft.resources.ResourceLocation;
+import cx.rain.mc.nbtedit.utility.IdentifierHelper;
+import net.minecraft.resources.Identifier;
 
 public class NetworkingConstants {
     // Common
-    public static final ResourceLocation BLOCK_ENTITY_EDITING_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "block_entity_editing");
-    public static final ResourceLocation ENTITY_EDITING_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "entity_editing");
-    public static final ResourceLocation ITEM_STACK_EDITING_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "item_stack_editing");
+    public static final Identifier BLOCK_ENTITY_EDITING_ID = IdentifierHelper.modLoc("block_entity_editing");
+    public static final Identifier ENTITY_EDITING_ID = IdentifierHelper.modLoc("entity_editing");
+    public static final Identifier ITEM_STACK_EDITING_ID = IdentifierHelper.modLoc("item_stack_editing");
 
     // C2S
-    public static final ResourceLocation BLOCK_ENTITY_RAYTRACE_RESULT_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "block_entity_raytrace_result");
-    public static final ResourceLocation ENTITY_RAYTRACE_RESULT_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "entity_raytrace_result");
-    public static final ResourceLocation ITEM_STACK_RAYTRACE_RESULT_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "item_stack_raytrace_result");
+    public static final Identifier BLOCK_ENTITY_RAYTRACE_RESULT_ID = IdentifierHelper.modLoc("block_entity_raytrace_result");
+    public static final Identifier ENTITY_RAYTRACE_RESULT_ID = IdentifierHelper.modLoc("entity_raytrace_result");
+    public static final Identifier ITEM_STACK_RAYTRACE_RESULT_ID = IdentifierHelper.modLoc("item_stack_raytrace_result");
 
     // S2C
-    public static final ResourceLocation RAYTRACE_REQUEST_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "raytrace_request");
+    public static final Identifier RAYTRACE_REQUEST_ID = IdentifierHelper.modLoc("raytrace_request");
 }

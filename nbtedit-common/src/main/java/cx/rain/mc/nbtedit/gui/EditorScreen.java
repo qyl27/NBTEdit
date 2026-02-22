@@ -11,7 +11,6 @@ import cx.rain.mc.nbtedit.gui.editor.EditingWindow;
 import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.editor.ClipboardHelper;
 import cx.rain.mc.nbtedit.utility.ModConstants;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -25,6 +24,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;

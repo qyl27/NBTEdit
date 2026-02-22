@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.gui.editor;
 
-import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.editor.NodeParser;
 import cx.rain.mc.nbtedit.editor.TagReadingHelper;
@@ -9,22 +8,21 @@ import cx.rain.mc.nbtedit.gui.component.ButtonComponent;
 import cx.rain.mc.nbtedit.gui.component.EditBoxComponent;
 import cx.rain.mc.nbtedit.gui.window.AbstractWindow;
 import cx.rain.mc.nbtedit.gui.window.IWindowHolder;
+import cx.rain.mc.nbtedit.utility.IdentifierHelper;
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.UUID;
 
 public class EditingWindow extends AbstractWindow {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "window");
+    public static final Identifier TEXTURE = IdentifierHelper.modLoc("window");
     public static final int WIDTH = 178;
     public static final int HEIGHT = 93;
 

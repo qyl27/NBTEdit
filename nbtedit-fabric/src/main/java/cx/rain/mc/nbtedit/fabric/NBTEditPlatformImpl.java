@@ -2,10 +2,10 @@ package cx.rain.mc.nbtedit.fabric;
 
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.api.command.IModPermission;
+import cx.rain.mc.nbtedit.api.command.VanillaModPermission;
 import cx.rain.mc.nbtedit.api.config.IModConfig;
 import cx.rain.mc.nbtedit.api.netowrking.IModNetworking;
 import cx.rain.mc.nbtedit.fabric.command.FabricPermissionApiImpl;
-import cx.rain.mc.nbtedit.fabric.command.VanillaPermissionImpl;
 import cx.rain.mc.nbtedit.fabric.config.ModConfigImpl;
 import cx.rain.mc.nbtedit.fabric.networking.ModNetworkingImpl;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -27,13 +27,13 @@ public class NBTEditPlatformImpl {
             IModPermission impl = null;
             try {
                 if (FabricLoader.getInstance().isModLoaded("fabric-permissions-api-v0")) {
-                    impl = new FabricPermissionApiImpl(CONFIG);
+                    impl = FabricPermissionApiImpl.INSTANCE;
                     NBTEdit.getInstance().getLogger().info("Fabric Permissions API detected, using it.");
                 }
             } catch (Throwable ignored) {
             }
             if (impl == null) {
-                impl = new VanillaPermissionImpl(CONFIG);
+                impl = VanillaModPermission.INSTANCE;
             }
             PERMISSION = impl;
         }

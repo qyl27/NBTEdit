@@ -11,14 +11,15 @@ import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.s2c.RaytracePacket;
+import cx.rain.mc.nbtedit.utility.IdentifierHelper;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.*;
 
 public class ModNetworkingImpl implements IModNetworking {
-	private static final ResourceLocation CHANNEL_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editing");
+	private static final Identifier CHANNEL_ID = IdentifierHelper.modLoc("editing");
 
 	private final SimpleChannel channel;
 

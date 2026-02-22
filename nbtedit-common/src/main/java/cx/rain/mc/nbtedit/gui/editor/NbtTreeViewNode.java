@@ -1,10 +1,10 @@
 package cx.rain.mc.nbtedit.gui.editor;
 
-import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.editor.EditorButton;
 import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.editor.AccessibilityHelper;
 import cx.rain.mc.nbtedit.gui.component.AbstractComponent;
+import cx.rain.mc.nbtedit.utility.IdentifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -12,16 +12,16 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 
 public class NbtTreeViewNode extends AbstractComponent {
-    public static final ResourceLocation ARROW_RIGHT = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_right");
-    public static final ResourceLocation ARROW_DOWN = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_down");
-    public static final ResourceLocation ARROW_RIGHT_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_right_highlighted");
-    public static final ResourceLocation ARROW_DOWN_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_down_highlighted");
+    public static final Identifier ARROW_RIGHT = IdentifierHelper.modLoc("editor/arrow_right");
+    public static final Identifier ARROW_DOWN = IdentifierHelper.modLoc("editor/arrow_down");
+    public static final Identifier ARROW_RIGHT_HIGHLIGHTED = IdentifierHelper.modLoc("editor/arrow_right_highlighted");
+    public static final Identifier ARROW_DOWN_HIGHLIGHTED = IdentifierHelper.modLoc("editor/arrow_down_highlighted");
 
     private final @NotNull NbtTreeView treeView;
     private final NbtTree.Node<?> node;
@@ -79,7 +79,7 @@ public class NbtTreeViewNode extends AbstractComponent {
             graphics.fill(getX() + 11, getY(), getX() + getWidth(), getY() + getHeight(), 0x80000000);
         }
 
-        ResourceLocation arrowSprite;
+        Identifier arrowSprite;
         if (node.shouldShowChildren()) {
             if (isSpoilerHover) {
                 arrowSprite = ARROW_DOWN_HIGHLIGHTED;

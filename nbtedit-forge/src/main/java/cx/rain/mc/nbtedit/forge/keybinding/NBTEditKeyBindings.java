@@ -17,7 +17,7 @@ import org.lwjgl.glfw.GLFW;
 public class NBTEditKeyBindings {
     public static final KeyMapping NBTEDIT_SHORTCUT = new KeyMapping(ModConstants.KEY_NBTEDIT_SHORTCUT,
             KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_N, NBTEditClient.KEY_CATEGORY);
+            GLFW.GLFW_KEY_N, NBTEditClient.KEY_CATEGORY, 0);
 
     @SubscribeEvent
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {

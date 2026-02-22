@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 
@@ -38,15 +39,15 @@ public class EditorButtonComponent extends ButtonComponent {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void renderContents(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (isHover(mouseX, mouseY)) {
-            graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x80ffffff);
+            guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x80ffffff);
         }
 
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, button.getSprite(), getX(), getY(), getWidth(), getHeight());
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, button.getSprite(), getX(), getY(), getWidth(), getHeight());
 
         if (isActive()) {
-            graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x80000000);
+            guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x80000000);
         }
     }
 }
