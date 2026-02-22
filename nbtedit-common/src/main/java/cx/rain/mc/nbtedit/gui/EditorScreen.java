@@ -240,17 +240,14 @@ public class EditorScreen extends AbstractScreen {
                 inactiveAllButtons();
 
                 editorButtons[elementType - 1].setActive(true);
-                editButton.active = !(nodeToFocus.getParent().getTag() instanceof ListTag);
                 deleteButton.setActive(true);
                 copyButton.setActive(true);
                 cutButton.setActive(true);
-                pasteButton.active = ClipboardHelper.getNode() != null
-                        && ClipboardHelper.getNode().getTag().getId() == elementType;
             } else {
                 activeAllButtons();
-                editButton.active = !(nodeToFocus.getParent().getTag() instanceof ListTag);
-                pasteButton.active = ClipboardHelper.getNode() != null;
             }
+            editButton.active = !(nodeToFocus.getParent().getTag() instanceof ListTag);
+            pasteButton.active = ClipboardHelper.getNode() != null;
         } else {
             inactiveAllButtons();
 

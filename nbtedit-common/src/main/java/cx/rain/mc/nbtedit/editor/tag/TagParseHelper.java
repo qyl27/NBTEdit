@@ -10,9 +10,10 @@ import java.util.UUID;
 public class TagParseHelper {
     /**
      * Get {@link TagType} from numeric tag type.
+     *
      * @param type Byte tag type in {@link Tag}.
+     * @param <C>  Tag type.
      * @return Tag type.
-     * @param <C> Tag type.
      */
     @SuppressWarnings("unchecked")
     public static <C extends Tag> TagType<C> getTagType(byte type) {
@@ -35,20 +36,15 @@ public class TagParseHelper {
     }
 
     /**
-     * Read typed tag from compound.
-     * @param parent Parent container.
-     * @param name Tag name.
+     * Parse tag to specific type.
+     *
+     * @param tag  Tag to parse.
      * @param type Tag type in {@link Tag}.
+     * @param <C>  Tag type from type.
      * @return Got tag.
-     * @param <C> Tag type from type.
      */
     @SuppressWarnings("unchecked")
-    public static <C extends Tag> @Nullable C getAs(@NotNull CompoundTag parent, @NotNull String name, byte type) {
-        if (!parent.contains(name)) {
-            return null;
-        }
-
-        var tag = parent.get(name);
+    public static <C extends Tag> @Nullable C getAs(@Nullable Tag tag, byte type) {
         if (tag == null) {
             return null;
         }

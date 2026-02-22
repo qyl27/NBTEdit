@@ -206,18 +206,19 @@ public class NbtTree {
                 var tag = TagParser.parseCompoundFully(data);
                 var nameOptional = tag.getString(TAG_NAME);
                 var typeOptional = tag.getByte(TAG_TYPE);
+                var value = tag.get(TAG_VALUE);
 
-                if (nameOptional.isEmpty() || typeOptional.isEmpty()) {
+                if (nameOptional.isEmpty() || typeOptional.isEmpty() || value == null) {
                     return null;
                 }
 
                 var name = nameOptional.get();
                 var type = typeOptional.get();
-                if (!tag.contains(name)) {
+                var t = TagParseHelper.getAs(value, type);
+                if (t == null) {
                     return null;
                 }
 
-                var t = TagParseHelper.getAs(tag, name, type);
                 return new Node<>(name, t);
             } catch (CommandSyntaxException | IllegalStateException ignored) {
                 return null;
