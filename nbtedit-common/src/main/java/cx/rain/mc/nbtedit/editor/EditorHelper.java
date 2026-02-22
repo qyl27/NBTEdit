@@ -24,7 +24,7 @@ public class EditorHelper {
     public static String newTagName(int buttonId, NbtTree.Node<?> parent) {
         var type = NbtType.ofButtonId(buttonId);
         if (!parent.hasChild()) {
-            return type + " 1";
+            return type.getTagName() + " 1";
         }
 
         for (int i = 1; i <= parent.getChildren().size() + 1; ++i) {
