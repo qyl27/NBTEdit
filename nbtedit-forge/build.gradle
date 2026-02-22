@@ -56,7 +56,7 @@ remapJar {
 unifiedPublishing {
     project {
         displayName = "NBTEdit Forge ${project.minecraft_version}-${project.mod_version}"
-        version = publishVersion
+        version = "${publishVersion}-forge"
         gameVersions = [project.minecraft_version]
         gameLoaders = ['forge']
         releaseType = 'release'

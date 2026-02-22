@@ -61,7 +61,7 @@ remapJar {
 unifiedPublishing {
     project {
         displayName = "NBTEdit Fabric ${project.minecraft_version}-${project.mod_version}"
-        version = publishVersion
+        version = "${publishVersion}-fabric"
         gameVersions = [project.minecraft_version]
         gameLoaders = ['fabric']
         releaseType = 'release'

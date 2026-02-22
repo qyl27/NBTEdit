@@ -55,7 +55,7 @@ remapJar {
 unifiedPublishing {
     project {
         displayName = "NBTEdit NeoForge ${project.minecraft_version}-${project.mod_version}"
-        version = publishVersion
+        version = "${publishVersion}-neoforge"
         gameVersions = [project.minecraft_version]
         gameLoaders = ['neoforge']
         releaseType = 'release'
