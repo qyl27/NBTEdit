@@ -40,14 +40,14 @@ Edit Entity with entity selector.
 
 ### Permissions（权限）
 
-| Name（权限名） | Default Level（默认等级） | Description（说明）                                          |
-| -------------- | ------------------------- | ------------------------------------------------------------ |
-| use            | 2                         | Open the editor to edit the NBT.<br />使用编辑器编辑 NBT 的权限。 |
-| read_only      | 1                         | Open the editor to view NBT, but can't save.<br />使用编辑器查看 NBT 的权限，保存按钮会被禁用。 |
-| edit_on_player | 4                         | Use the editor on player, some issue may be caused. USE AT YOUR OWN RISK!<br />使用编辑器编辑玩家的权限，可能会造成一些问题。谨慎使用。 |
+| Name（权限名）      | Default Level（默认等级） | Description（说明）                                                                                             |
+|----------------|---------------------|-------------------------------------------------------------------------------------------------------------|
+| use            | 2                   | Open the editor to edit the NBT.<br />使用编辑器编辑 NBT 的权限。                                                      |
+| read_only      | 1                   | Open the editor to view NBT, but can't save.<br />使用编辑器查看 NBT 的权限，保存按钮会被禁用。                                 |
+| edit_on_player | 4                   | Use the editor on player, some issue may be caused. USE AT YOUR OWN RISK!<br />使用编辑器编辑玩家的权限，可能会造成一些问题。谨慎使用。 |
 
-If you're using Forge or NeoForge, you may need a permission plugin like LuckPerms to grant permission node `nbtedit.<Permission Node>` to any player, or use as the same as Fabric.  
-在 Forge 或者 NeoForge 平台使用，可以搭配权限管理模组（例如 LuckPerms）授予玩家 `nbtedit.<权限名>` 的权限节点，或者像 Fabric 一样调整配置文件。
+You may override the default permission levels with config file, or use a permission manager like `LuckPerms` to grant permission node `nbtedit.<Name>` to any player.  
+可以通过配置文件覆盖上述权限的默认等级，也可以搭配权限管理模组（如LuckPerms）授予玩家`nbtedit.<权限名>`的权限节点。
 
 
 
@@ -62,7 +62,7 @@ Location（位置）: `.minecraft/config/nbtedit.toml`
     # Enable debug logs. Necessary if you are reporting bugs. （显示调试日志，反馈问题时需要。）
     debug = false
 
-    # Permission node levels. Like vanilla, should in 0 ~ 5 range. （权限节点默认等级，取值和原版相同。）
+    # Override the default permission levels. Similar to vanilla, in the range of 0 ~ 4. （覆盖权限节点默认等级，取值和原版相同，为0~4。）
     [general.permission]
        use = 2
        read_only = 1
@@ -75,7 +75,7 @@ Location（位置）: `.minecraft/config/nbtedit.json`
 ```json5
 {
   "debug": false,           // Enable debug logs. Necessary if you are reporting bugs. （显示调试日志，反馈问题时需要。）
-  "permissionsLevels": {    // Permission node levels. Like vanilla, should in 0 ~ 5 range. （权限节点默认等级，取值和原版相同。）
+  "permissionsLevels": {    // Override the default permission levels. Similar to vanilla, in the range of 0 ~ 4. （覆盖权限节点默认等级，取值和原版相同，为0~4。）
     "read_only": 1,
     "edit_on_player": 4,
     "use": 2
