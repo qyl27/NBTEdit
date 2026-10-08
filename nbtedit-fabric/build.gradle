@@ -32,15 +32,15 @@ loom {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    api "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-    modRuntimeOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
+    runtimeOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
 
-    modCompileOnly "me.lucko:fabric-permissions-api:${rootProject.fabric_permission_api_version}"
+    compileOnly "me.lucko:fabric-permissions-api:${rootProject.fabric_permission_api_version}"
     include "me.lucko:fabric-permissions-api:${rootProject.fabric_permission_api_version}"
 
-    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive false }
+    common(project(':nbtedit-common')) { transitive = false }
     shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionFabric')
 }
 
@@ -52,21 +52,20 @@ processResources {
     }
 }
 
-remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
+loom {
+    nestJars tasks.named('shadowJar'), project.configurations.include
+    injectAccessWidener tasks.named('shadowJar')
 }
 
 unifiedPublishing {
     project {
         displayName = "NBTEdit Fabric ${project.minecraft_version}-${project.mod_version}"
         version = "${publishVersion}-fabric"
-        gameVersions = [project.minecraft_version]
+        gameVersions = rootProject.game_versions.split(',') as List
         gameLoaders = ['fabric']
         releaseType = 'release'
 
-        mainPublication tasks.remapJar
+        mainPublication tasks.shadowJar
 
         relations {
             depends {

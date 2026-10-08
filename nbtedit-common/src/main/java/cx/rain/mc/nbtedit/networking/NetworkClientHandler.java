@@ -6,14 +6,8 @@ import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.s2c.RaytracePacket;
 import cx.rain.mc.nbtedit.utility.client.RayTraceHelper;
 import cx.rain.mc.nbtedit.utility.client.ScreenHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 
 public class NetworkClientHandler {
-
-    private static LocalPlayer getPlayer() {
-        return Minecraft.getInstance().player;
-    }
 
     public static void handleRaytrace(RaytracePacket packet) {
         RayTraceHelper.doRayTrace();

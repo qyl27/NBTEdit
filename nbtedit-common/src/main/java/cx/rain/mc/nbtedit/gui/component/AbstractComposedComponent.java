@@ -1,13 +1,12 @@
 package cx.rain.mc.nbtedit.gui.component;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -25,13 +24,13 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     }
 
     @Override
-    public void addChild(@NotNull IComponent child) {
+    public void addChild(IComponent child) {
         children.add(child);
         child.setParent(this);
     }
 
     @Override
-    public void removeChild(@NotNull IComponent child) {
+    public void removeChild(IComponent child) {
         children.remove(child);
         child.setParent(null);
     }
@@ -42,7 +41,7 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     }
 
     @Override
-    public @NotNull List<? extends GuiEventListener> children() {
+    public List<? extends GuiEventListener> children() {
         return getChildren();
     }
 
@@ -153,9 +152,9 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         for (var c : getChildren()) {
-            c.render(guiGraphics, mouseX, mouseY, partialTick);
+            c.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         }
     }
 }

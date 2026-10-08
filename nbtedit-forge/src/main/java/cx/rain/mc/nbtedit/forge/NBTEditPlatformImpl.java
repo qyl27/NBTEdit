@@ -7,7 +7,6 @@ import cx.rain.mc.nbtedit.forge.command.ModPermissionImpl;
 import cx.rain.mc.nbtedit.forge.config.ModConfigImpl;
 import cx.rain.mc.nbtedit.forge.networking.ModNetworkingImpl;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartedEvent;
 
 import java.util.function.Consumer;

@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.NBTEditClient;
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import com.mojang.blaze3d.platform.InputConstants;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -13,15 +14,16 @@ import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
-@Mod.EventBusSubscriber(modid = NBTEdit.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@Slf4j
+@Mod.EventBusSubscriber(modid = NBTEdit.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class NBTEditKeyBindings {
     public static final KeyMapping NBTEDIT_SHORTCUT = new KeyMapping(ModConstants.KEY_NBTEDIT_SHORTCUT,
-            KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_N, NBTEditClient.KEY_CATEGORY, 0);
+        KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM,
+        GLFW.GLFW_KEY_N, NBTEditClient.KEY_CATEGORY, 0);
 
     @SubscribeEvent
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
-        NBTEdit.getInstance().getLogger().info("Register key binding.");
+        log.info("Register key binding.");
         event.register(NBTEDIT_SHORTCUT);
     }
 }

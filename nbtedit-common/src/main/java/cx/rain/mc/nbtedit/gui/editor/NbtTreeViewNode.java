@@ -5,15 +5,15 @@ import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.editor.AccessibilityHelper;
 import cx.rain.mc.nbtedit.gui.component.AbstractComponent;
 import cx.rain.mc.nbtedit.utility.IdentifierHelper;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 
@@ -23,10 +23,11 @@ public class NbtTreeViewNode extends AbstractComponent {
     public static final Identifier ARROW_RIGHT_HIGHLIGHTED = IdentifierHelper.modLoc("editor/arrow_right_highlighted");
     public static final Identifier ARROW_DOWN_HIGHLIGHTED = IdentifierHelper.modLoc("editor/arrow_down_highlighted");
 
-    private final @NotNull NbtTreeView treeView;
+    private final NbtTreeView treeView;
+    @Getter
     private final NbtTree.Node<?> node;
 
-    public NbtTreeViewNode(int x, int y, NbtTree.Node<?> node, @NotNull NbtTreeView parent) {
+    public NbtTreeViewNode(int x, int y, NbtTree.Node<?> node, NbtTreeView parent) {
         super(x, y, 0, Minecraft.getInstance().font.lineHeight, Component.empty());
 
         this.treeView = parent;
@@ -44,12 +45,8 @@ public class NbtTreeViewNode extends AbstractComponent {
         setTooltipDelay(Duration.ofMillis(200));
     }
 
-    public @NotNull NbtTreeView getParent() {
+    public NbtTreeView getParent() {
         return treeView;
-    }
-
-    public NbtTree.Node<?> getNode() {
-        return node;
     }
 
     public boolean isMouseInsideText(double mouseX, double mouseY) {
@@ -66,9 +63,9 @@ public class NbtTreeViewNode extends AbstractComponent {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         var isSelected = getParent().getFocusedNode() != null
-                && getParent().getFocusedNode() == this.getNode();
+            && getParent().getFocusedNode() == this.getNode();
         var isTextHover = isMouseInsideText(mouseX, mouseY);
         var isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);
         this.isHovered = isTextHover || isSpoilerHover;
@@ -100,14 +97,14 @@ public class NbtTreeViewNode extends AbstractComponent {
 
         var tagSprite = EditorButton.ofTag(node.getTag()).getSprite();
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, tagSprite, getX() + 1, getY(), 9, getHeight());
-        graphics.drawString(getMinecraft().font, getMessage(), getX() + 11, getY() + (getHeight() - 8) / 2, color);
+        graphics.text(getMinecraft().font, getMessage(), getX() + 11, getY() + (getHeight() - 8) / 2, color);
     }
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return this.active
-                && this.visible
-                && (isMouseInsideText(mouseX, mouseY) || isMouseInsideSpoiler(mouseX, mouseY));
+            && this.visible
+            && (isMouseInsideText(mouseX, mouseY) || isMouseInsideSpoiler(mouseX, mouseY));
     }
 
     @Override

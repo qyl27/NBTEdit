@@ -22,7 +22,8 @@ public class ModPermissionImpl implements IModPermission {
 
     private static PermissionNode<Boolean> bool(ModPermission permission) {
         return new PermissionNode<>(permission.getId(), PermissionTypes.BOOLEAN,
-                (player, uuid, context) -> player != null && VanillaModPermission.INSTANCE.hasPermission(player, permission));
+            (player, _, _) ->
+                player != null && VanillaModPermission.INSTANCE.hasPermission(player, permission));
     }
 
     @SubscribeEvent

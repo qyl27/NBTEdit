@@ -24,51 +24,51 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 @EventBusSubscriber(modid = NBTEdit.MODID)
 public class ModNetworkingImpl implements IModNetworking {
 
-	@SubscribeEvent
-	public static void register(RegisterPayloadHandlersEvent event) {
-		var registrar = event.registrar(NBTEdit.VERSION).optional();
+    @SubscribeEvent
+    public static void register(RegisterPayloadHandlersEvent event) {
+        var registrar = event.registrar(NBTEdit.VERSION).optional();
 
-		registrar.playToClient(RaytracePacket.TYPE, RaytracePacket.CODEC, ModNetworkingImpl::clientHandle);
+        registrar.playToClient(RaytracePacket.TYPE, RaytracePacket.CODEC, ModNetworkingImpl::clientHandle);
 
-		registrar.playToServer(BlockEntityRaytraceResultPacket.TYPE, BlockEntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
-		registrar.playToServer(EntityRaytraceResultPacket.TYPE, EntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
-		registrar.playToServer(ItemStackRaytraceResultPacket.TYPE, ItemStackRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
+        registrar.playToServer(BlockEntityRaytraceResultPacket.TYPE, BlockEntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
+        registrar.playToServer(EntityRaytraceResultPacket.TYPE, EntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
+        registrar.playToServer(ItemStackRaytraceResultPacket.TYPE, ItemStackRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
 
-		registrar.playBidirectional(BlockEntityEditingPacket.TYPE, BlockEntityEditingPacket.CODEC, ModNetworkingImpl::serverHandle, ModNetworkingImpl::clientHandle);
-		registrar.playBidirectional(EntityEditingPacket.TYPE, EntityEditingPacket.CODEC, ModNetworkingImpl::serverHandle, ModNetworkingImpl::clientHandle);
-		registrar.playBidirectional(ItemStackEditingPacket.TYPE, ItemStackEditingPacket.CODEC, ModNetworkingImpl::serverHandle, ModNetworkingImpl::clientHandle);
-	}
+        registrar.playBidirectional(BlockEntityEditingPacket.TYPE, BlockEntityEditingPacket.CODEC, ModNetworkingImpl::serverHandle, ModNetworkingImpl::clientHandle);
+        registrar.playBidirectional(EntityEditingPacket.TYPE, EntityEditingPacket.CODEC, ModNetworkingImpl::serverHandle, ModNetworkingImpl::clientHandle);
+        registrar.playBidirectional(ItemStackEditingPacket.TYPE, ItemStackEditingPacket.CODEC, ModNetworkingImpl::serverHandle, ModNetworkingImpl::clientHandle);
+    }
 
-	private static void clientHandle(RaytracePacket packet, IPayloadContext context) {
-		context.enqueueWork(() -> NetworkClientHandler.handleRaytrace(packet));
-	}
+    private static void clientHandle(RaytracePacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> NetworkClientHandler.handleRaytrace(packet));
+    }
 
-	private static void serverHandle(BlockEntityRaytraceResultPacket packet, IPayloadContext context) {
-		context.enqueueWork(() -> {
-			var player = context.player();
-			if (player instanceof ServerPlayer serverPlayer) {
-				NetworkServerHandler.handleBlockEntityResult(serverPlayer, packet);
-			}
-		});
-	}
+    private static void serverHandle(BlockEntityRaytraceResultPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            var player = context.player();
+            if (player instanceof ServerPlayer serverPlayer) {
+                NetworkServerHandler.handleBlockEntityResult(serverPlayer, packet);
+            }
+        });
+    }
 
-	private static void serverHandle(EntityRaytraceResultPacket packet, IPayloadContext context) {
-		context.enqueueWork(() -> {
-			var player = context.player();
-			if (player instanceof ServerPlayer serverPlayer) {
-				NetworkServerHandler.handleEntityResult(serverPlayer, packet);
-			}
-		});
-	}
+    private static void serverHandle(EntityRaytraceResultPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            var player = context.player();
+            if (player instanceof ServerPlayer serverPlayer) {
+                NetworkServerHandler.handleEntityResult(serverPlayer, packet);
+            }
+        });
+    }
 
-	private static void serverHandle(ItemStackRaytraceResultPacket packet, IPayloadContext context) {
-		context.enqueueWork(() -> {
-			var player = context.player();
-			if (player instanceof ServerPlayer serverPlayer) {
-				NetworkServerHandler.handleItemStackResult(serverPlayer, packet);
-			}
-		});
-	}
+    private static void serverHandle(ItemStackRaytraceResultPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            var player = context.player();
+            if (player instanceof ServerPlayer serverPlayer) {
+                NetworkServerHandler.handleItemStackResult(serverPlayer, packet);
+            }
+        });
+    }
 
     private static void clientHandle(BlockEntityEditingPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> NetworkClientHandler.handleBlockEntityEditing(packet));
@@ -89,47 +89,47 @@ public class ModNetworkingImpl implements IModNetworking {
                 NetworkServerHandler.saveBlockEntity(serverPlayer, packet);
             }
         });
-	}
+    }
 
-	private static void serverHandle(EntityEditingPacket packet, IPayloadContext context) {
+    private static void serverHandle(EntityEditingPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             var player = context.player();
             if (player instanceof ServerPlayer serverPlayer) {
                 NetworkServerHandler.saveEntity(serverPlayer, packet);
             }
         });
-	}
+    }
 
-	private static void serverHandle(ItemStackEditingPacket packet, IPayloadContext context) {
+    private static void serverHandle(ItemStackEditingPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             var player = context.player();
             if (player instanceof ServerPlayer serverPlayer) {
                 NetworkServerHandler.saveItemStack(serverPlayer, packet);
             }
         });
-	}
+    }
 
-	public ModNetworkingImpl() {
-	}
+    public ModNetworkingImpl() {
+    }
 
-	@Override
-	public void sendTo(ServerPlayer player, CustomPacketPayload packet) {
+    @Override
+    public void sendTo(ServerPlayer player, CustomPacketPayload packet) {
         if (!player.connection.hasChannel(packet)) {
             player.sendSystemMessage(Component.translatableWithFallback(ModConstants.MESSAGE_MISSING_CLIENT_MOD, ModConstants.MESSAGE_MISSING_CLIENT_MOD_FALLBACK));
             return;
         }
-		player.connection.send(packet);
-	}
+        player.connection.send(packet);
+    }
 
-	@Override
-	public void sendToServer(CustomPacketPayload packet) {
-		var connection = Minecraft.getInstance().getConnection();
-		if (connection != null) {
+    @Override
+    public void sendToServer(CustomPacketPayload packet) {
+        var connection = Minecraft.getInstance().getConnection();
+        if (connection != null) {
             if (!connection.hasChannel(packet)) {
                 Minecraft.getInstance().getChatListener().handleSystemMessage(Component.translatableWithFallback(ModConstants.MESSAGE_MISSING_SERVER_MOD, ModConstants.MESSAGE_MISSING_SERVER_MOD_FALLBACK), false);
                 return;
             }
-			connection.send(packet);
-		}
-	}
+            connection.send(packet);
+        }
+    }
 }

@@ -5,14 +5,13 @@ import cx.rain.mc.nbtedit.gui.component.IComponent;
 import cx.rain.mc.nbtedit.gui.component.IComposedComponent;
 import cx.rain.mc.nbtedit.gui.window.IWindow;
 import cx.rain.mc.nbtedit.gui.window.IWindowHolder;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.naming.OperationNotSupportedException;
@@ -23,10 +22,10 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         super(title);
     }
 
-    /// <editor-fold desc="IComponent.">
+    // region IComponent
 
     @Override
-    public AbstractComposedComponent getParent() {
+    public @Nullable AbstractComposedComponent getParent() {
         return null;
     }
 
@@ -71,9 +70,9 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         return true;
     }
 
-    /// </editor-fold>
+    // endregion
 
-    /// <editor-fold desc="Windows holder.">
+    // region Windows holder
 
     /**
      * Map<IWindow window, Boolean shown>
@@ -87,12 +86,12 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
     private IWindow focusedWindow = null;
 
     @Override
-    public @NotNull List<IWindow> getWindows() {
+    public List<IWindow> getWindows() {
         return List.copyOf(windows.keySet());
     }
 
     @Override
-    public void addWindow(@NotNull IWindow window, boolean mutex, boolean show) {
+    public void addWindow(IWindow window, boolean mutex, boolean show) {
         addChild(window);
         windows.put(window, false);
         window.onOpen();
@@ -111,7 +110,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
     }
 
     @Override
-    public void closeWindow(@NotNull IWindow window) {
+    public void closeWindow(IWindow window) {
         if (getMutexWindow() == window) {
             setMutexWindow(null);
         }
@@ -126,7 +125,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
     }
 
     @Override
-    public void show(@NotNull IWindow window) {
+    public void show(IWindow window) {
         if (!windows.get(window)) {
             windows.put(window, true);
             window.onShown();
@@ -134,7 +133,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
     }
 
     @Override
-    public void hide(@NotNull IWindow window) {
+    public void hide(IWindow window) {
         if (windows.get(window) && getMutexWindow() != window) {
             windows.put(window, false);
             window.onHidden();
@@ -188,14 +187,14 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
     private final List<IComponent> children = new ArrayList<>();
 
     @Override
-    public void addChild(@NotNull IComponent child) {
+    public void addChild(IComponent child) {
         children.add(child);
         child.setParent(this);
         addRenderableWidget(child);
     }
 
     @Override
-    public void removeChild(@NotNull IComponent child) {
+    public void removeChild(IComponent child) {
         children.remove(child);
         child.setParent(null);
         removeWidget(child);
@@ -207,7 +206,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
     }
 
     @Override
-    public @NotNull List<? extends GuiEventListener> children() {
+    public List<? extends GuiEventListener> children() {
         return List.copyOf(getChildren());
     }
 
@@ -253,18 +252,18 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         clearChildren();
     }
 
-    /// </editor-fold>
+    // endregion
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         var maskedMouseX = hasMutexWindow() ? -1 : mouseX;
         var maskedMouseY = hasMutexWindow() ? -1 : mouseY;
 
-        guiGraphics.drawCenteredString(minecraft.font, title, this.width / 2, 4, 0xFFFFFFFF);
+        guiGraphics.centeredText(minecraft.font, title, this.width / 2, 4, 0xFFFFFFFF);
 
         for (var c : getChildren()) {
             if (!(c instanceof IWindow)) {
-                c.render(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
+                c.extractRenderState(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
             }
         }
 
@@ -278,12 +277,12 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
 
         for (var w : getWindows()) {
             if (w != getMutexWindow()) {
-                w.render(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
+                w.extractRenderState(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
             }
         }
 
         if (hasMutexWindow()) {
-            getMutexWindow().render(guiGraphics, mouseX, mouseY, partialTick);
+            getMutexWindow().extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         }
 
         guiGraphics.pose().popMatrix();
@@ -359,7 +358,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         return IWindowHolder.super.charTyped(event);
     }
 
-    public static void drawGrayishBackground(GuiGraphics guiGraphics) {
+    public static void drawGrayishBackground(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.pose().pushMatrix();
         guiGraphics.fillGradient(0, 0, guiGraphics.guiWidth(), guiGraphics.guiHeight(), -1072689136, -804253680);
         guiGraphics.pose().popMatrix();

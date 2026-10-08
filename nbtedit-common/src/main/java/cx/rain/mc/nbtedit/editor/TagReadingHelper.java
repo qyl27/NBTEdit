@@ -18,7 +18,7 @@ public class TagReadingHelper {
         if (tag instanceof CompoundTag compoundTag) {
             try {
                 return RegistryContextSerializeHelper.deserializeItemStack(player.registryAccess(), compoundTag)
-                        .orElse(null);
+                    .orElse(null);
             } catch (Exception ignored) {
             }
         }
@@ -40,8 +40,8 @@ public class TagReadingHelper {
     public static @Nullable Component tryReadText(Player player, @Nullable Tag tag) {
         if (tag instanceof StringTag stringTag) {
             return stringTag.asString()
-                    .flatMap(s -> RegistryContextSerializeHelper.deserializeComponent(player.registryAccess(), s))
-                    .orElse(null);
+                .flatMap(s -> RegistryContextSerializeHelper.deserializeComponent(player.registryAccess(), s))
+                .orElse(null);
         }
 
         return null;

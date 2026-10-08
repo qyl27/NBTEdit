@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.networking;
 
-import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.NBTEditPlatform;
 import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
@@ -8,6 +7,7 @@ import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
 import cx.rain.mc.nbtedit.utility.LoggingHelper;
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import cx.rain.mc.nbtedit.utility.RegistryContextSerializeHelper;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.UUID;
 
+@Slf4j
 public class NetworkEditingHelper {
     public static void editBlockEntity(ServerPlayer player, BlockPos pos) {
         player.server.execute(() -> {
@@ -28,20 +29,20 @@ public class NetworkEditingHelper {
                 return;
             }
 
-            NBTEdit.getInstance().getLogger().debug("Player {} requested BlockEntity at {} {} {}.",
-                    player.getName().getString(), pos.getX(), pos.getY(), pos.getZ());
+            log.debug("Player {} requested BlockEntity at {} {} {}.",
+                player.getName().getString(), pos.getX(), pos.getY(), pos.getZ());
 
             var blockEntity = player.level().getBlockEntity(pos);
             if (blockEntity == null) {
                 player.createCommandSourceStack().sendFailure(Component
-                        .translatable(ModConstants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
-                        .withStyle(ChatFormatting.RED));
+                    .translatable(ModConstants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
+                    .withStyle(ChatFormatting.RED));
                 return;
             }
 
             player.sendSystemMessage(Component
-                    .translatable(ModConstants.MESSAGE_EDITING_BLOCK_ENTITY, pos.getX(), pos.getY(), pos.getZ())
-                    .withStyle(ChatFormatting.GREEN));
+                .translatable(ModConstants.MESSAGE_EDITING_BLOCK_ENTITY, pos.getX(), pos.getY(), pos.getZ())
+                .withStyle(ChatFormatting.GREEN));
 
             var tag = blockEntity.saveWithFullMetadata(player.server.registryAccess());
             NBTEditPlatform.getNetworking().sendTo(player, new BlockEntityEditingPacket(tag, NBTEditPlatform.getPermission().isReadOnly(player), pos));
@@ -58,19 +59,19 @@ public class NetworkEditingHelper {
             assert entity != null;
 
             if (entity instanceof Player
-                    && entity != player
-                    && !NetworkingHelper.checkEditOnPlayerPermission(player)) {
-                NBTEdit.getInstance().getLogger().info("Player {} tried to use nbtedit on a player which is not allowed.",
-                        player.getName().getString());
+                && entity != player
+                && !NetworkingHelper.checkEditOnPlayerPermission(player)) {
+                log.info("Player {} tried to use nbtedit on a player which is not allowed.",
+                    player.getName().getString());
                 return;
             }
 
-            NBTEdit.getInstance().getLogger().debug("Player {} is editing entity {}.",
-                    player.getName().getString(), player == entity ? "themself" : entity.getUUID());
+            log.debug("Player {} is editing entity {}.",
+                player.getName().getString(), player == entity ? "themself" : entity.getUUID());
 
             player.sendSystemMessage(Component
-                    .translatable(ModConstants.MESSAGE_EDITING_ENTITY, entityUuid.toString())
-                    .withStyle(ChatFormatting.GREEN));
+                .translatable(ModConstants.MESSAGE_EDITING_ENTITY, entityUuid.toString())
+                .withStyle(ChatFormatting.GREEN));
 
             var output = RegistryContextSerializeHelper.createTagValueOutput(player.registryAccess());
             if (entity instanceof Player) {
@@ -89,16 +90,16 @@ public class NetworkEditingHelper {
             }
 
             if (stack.isEmpty()) {
-                player.sendSystemMessage(Component.literal(ModConstants.MESSAGE_NOTHING_TO_EDIT).withStyle(ChatFormatting.RED));
+                player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_NOTHING_TO_EDIT).withStyle(ChatFormatting.RED));
                 return;
             }
 
-            NBTEdit.getInstance().getLogger().debug("Player {} is editing ItemStack named {}.",
-                    player.getName().getString(), stack.getDisplayName().getString());
+            log.debug("Player {} is editing ItemStack named {}.",
+                player.getName().getString(), stack.getDisplayName().getString());
 
             player.sendSystemMessage(Component
-                    .translatable(ModConstants.MESSAGE_EDITING_ITEM_STACK, stack.getDisplayName().getString())
-                    .withStyle(ChatFormatting.GREEN));
+                .translatable(ModConstants.MESSAGE_EDITING_ITEM_STACK, stack.getDisplayName().getString())
+                .withStyle(ChatFormatting.GREEN));
 
             var optional = RegistryContextSerializeHelper.serializeItemStack(player.registryAccess(), stack);
             if (optional.isEmpty()) {

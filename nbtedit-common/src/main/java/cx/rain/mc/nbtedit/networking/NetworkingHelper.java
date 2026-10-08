@@ -13,7 +13,7 @@ public class NetworkingHelper {
 
         if (!result) {
             player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_NO_PERMISSION)
-                    .withStyle(ChatFormatting.RED));
+                .withStyle(ChatFormatting.RED));
         }
 
         return result;
@@ -24,7 +24,7 @@ public class NetworkingHelper {
 
         if (!result) {
             player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_NO_PERMISSION)
-                    .withStyle(ChatFormatting.RED));
+                .withStyle(ChatFormatting.RED));
         }
 
         return result;
@@ -35,7 +35,7 @@ public class NetworkingHelper {
 
         if (!result) {
             player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
-                    .withStyle(ChatFormatting.RED));
+                .withStyle(ChatFormatting.RED));
         }
 
         return result;
@@ -46,7 +46,7 @@ public class NetworkingHelper {
 
         if (!result) {
             player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_NOT_LOADED)
-                    .withStyle(ChatFormatting.RED));
+                .withStyle(ChatFormatting.RED));
         }
 
         return result;

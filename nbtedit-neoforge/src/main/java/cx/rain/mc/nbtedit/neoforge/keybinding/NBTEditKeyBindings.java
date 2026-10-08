@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.NBTEditClient;
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import com.mojang.blaze3d.platform.InputConstants;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -13,15 +14,16 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
 
+@Slf4j
 @EventBusSubscriber(modid = NBTEdit.MODID, value = Dist.CLIENT)
 public class NBTEditKeyBindings {
     public static final KeyMapping NBTEDIT_SHORTCUT = new KeyMapping(ModConstants.KEY_NBTEDIT_SHORTCUT,
-            KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_N, NBTEditClient.KEY_CATEGORY);
+        KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM,
+        GLFW.GLFW_KEY_N, NBTEditClient.KEY_CATEGORY);
 
     @SubscribeEvent
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
-        NBTEdit.getInstance().getLogger().info("Register key binding.");
+        log.info("Register key binding.");
         event.register(NBTEDIT_SHORTCUT);
     }
 }

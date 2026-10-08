@@ -19,84 +19,91 @@ import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.*;
 
 public class ModNetworkingImpl implements IModNetworking {
-	private static final Identifier CHANNEL_ID = IdentifierHelper.modLoc("editing");
+    private static final Identifier CHANNEL_ID = IdentifierHelper.modLoc("editing");
 
-	private final SimpleChannel channel;
+    private final SimpleChannel channel;
 
-	public ModNetworkingImpl() {
-		channel = ChannelBuilder.named(CHANNEL_ID)
-				.networkProtocolVersion(NBTEdit.VERSION.hashCode())
-				.optional()
-				.simpleChannel();
+    public ModNetworkingImpl() {
+        channel = ChannelBuilder.named(CHANNEL_ID)
+            .networkProtocolVersion(NBTEdit.VERSION.hashCode())
+            .optional()
+            .simpleChannel();
 
-		registerMessages();
-	}
+        registerMessages();
+    }
 
-	private void registerMessages() {
-		channel.play()
-				.clientbound()
-				.add(RaytracePacket.class, RaytracePacket.CODEC, this::clientHandle);
+    private void registerMessages() {
+        channel.play()
+            .clientbound()
+            .add(RaytracePacket.class, RaytracePacket.CODEC, this::clientHandle);
 
-		channel.play()
-				.serverbound()
-				.add(BlockEntityRaytraceResultPacket.class, BlockEntityRaytraceResultPacket.CODEC, this::serverHandle)
-				.add(EntityRaytraceResultPacket.class, EntityRaytraceResultPacket.CODEC, this::serverHandle)
-				.add(ItemStackRaytraceResultPacket.class, ItemStackRaytraceResultPacket.CODEC, this::serverHandle);
+        channel.play()
+            .serverbound()
+            .add(BlockEntityRaytraceResultPacket.class, BlockEntityRaytraceResultPacket.CODEC, this::serverHandle)
+            .add(EntityRaytraceResultPacket.class, EntityRaytraceResultPacket.CODEC, this::serverHandle)
+            .add(ItemStackRaytraceResultPacket.class, ItemStackRaytraceResultPacket.CODEC, this::serverHandle);
 
-		channel.play()
-				.bidirectional()
-				.add(BlockEntityEditingPacket.class, BlockEntityEditingPacket.CODEC, this::handle)
-				.add(EntityEditingPacket.class, EntityEditingPacket.CODEC, this::handle)
-				.add(ItemStackEditingPacket.class, ItemStackEditingPacket.CODEC, this::handle);
-	}
+        channel.play()
+            .bidirectional()
+            .add(BlockEntityEditingPacket.class, BlockEntityEditingPacket.CODEC, this::handle)
+            .add(EntityEditingPacket.class, EntityEditingPacket.CODEC, this::handle)
+            .add(ItemStackEditingPacket.class, ItemStackEditingPacket.CODEC, this::handle);
+    }
 
-	private void clientHandle(RaytracePacket packet, CustomPayloadEvent.Context context) {
-		context.enqueueWork(() -> NetworkClientHandler.handleRaytrace(packet));
-	}
+    private void clientHandle(RaytracePacket packet, CustomPayloadEvent.Context context) {
+        context.enqueueWork(() -> NetworkClientHandler.handleRaytrace(packet));
+        context.setPacketHandled(true);
+    }
 
-	private void serverHandle(BlockEntityRaytraceResultPacket packet, CustomPayloadEvent.Context context) {
-		context.enqueueWork(() -> NetworkServerHandler.handleBlockEntityResult(context.getSender(), packet));
-	}
+    private void serverHandle(BlockEntityRaytraceResultPacket packet, CustomPayloadEvent.Context context) {
+        context.enqueueWork(() -> NetworkServerHandler.handleBlockEntityResult(context.getSender(), packet));
+        context.setPacketHandled(true);
+    }
 
-	private void serverHandle(EntityRaytraceResultPacket packet, CustomPayloadEvent.Context context) {
-		context.enqueueWork(() -> NetworkServerHandler.handleEntityResult(context.getSender(), packet));
-	}
+    private void serverHandle(EntityRaytraceResultPacket packet, CustomPayloadEvent.Context context) {
+        context.enqueueWork(() -> NetworkServerHandler.handleEntityResult(context.getSender(), packet));
+        context.setPacketHandled(true);
+    }
 
-	private void serverHandle(ItemStackRaytraceResultPacket packet, CustomPayloadEvent.Context context) {
-		context.enqueueWork(() -> NetworkServerHandler.handleItemStackResult(context.getSender(), packet));
-	}
+    private void serverHandle(ItemStackRaytraceResultPacket packet, CustomPayloadEvent.Context context) {
+        context.enqueueWork(() -> NetworkServerHandler.handleItemStackResult(context.getSender(), packet));
+        context.setPacketHandled(true);
+    }
 
-	private void handle(BlockEntityEditingPacket packet, CustomPayloadEvent.Context context) {
-		if (context.isClientSide()) {
-			context.enqueueWork(() -> NetworkClientHandler.handleBlockEntityEditing(packet));
-		} else {
-			context.enqueueWork(() -> NetworkServerHandler.saveBlockEntity(context.getSender(), packet));
-		}
-	}
+    private void handle(BlockEntityEditingPacket packet, CustomPayloadEvent.Context context) {
+        if (context.isClientSide()) {
+            context.enqueueWork(() -> NetworkClientHandler.handleBlockEntityEditing(packet));
+        } else {
+            context.enqueueWork(() -> NetworkServerHandler.saveBlockEntity(context.getSender(), packet));
+        }
+        context.setPacketHandled(true);
+    }
 
-	private void handle(EntityEditingPacket packet, CustomPayloadEvent.Context context) {
-		if (context.isClientSide()) {
-			context.enqueueWork(() -> NetworkClientHandler.handleEntityEditing(packet));
-		} else {
-			context.enqueueWork(() -> NetworkServerHandler.saveEntity(context.getSender(), packet));
-		}
-	}
+    private void handle(EntityEditingPacket packet, CustomPayloadEvent.Context context) {
+        if (context.isClientSide()) {
+            context.enqueueWork(() -> NetworkClientHandler.handleEntityEditing(packet));
+        } else {
+            context.enqueueWork(() -> NetworkServerHandler.saveEntity(context.getSender(), packet));
+        }
+        context.setPacketHandled(true);
+    }
 
-	private void handle(ItemStackEditingPacket packet, CustomPayloadEvent.Context context) {
-		if (context.isClientSide()) {
-			context.enqueueWork(() -> NetworkClientHandler.handleItemStackEditing(packet));
-		} else {
-			context.enqueueWork(() -> NetworkServerHandler.saveItemStack(context.getSender(), packet));
-		}
-	}
+    private void handle(ItemStackEditingPacket packet, CustomPayloadEvent.Context context) {
+        if (context.isClientSide()) {
+            context.enqueueWork(() -> NetworkClientHandler.handleItemStackEditing(packet));
+        } else {
+            context.enqueueWork(() -> NetworkServerHandler.saveItemStack(context.getSender(), packet));
+        }
+        context.setPacketHandled(true);
+    }
 
-	@Override
-	public void sendTo(ServerPlayer player, CustomPacketPayload packet) {
-		channel.send(packet, player.connection.getConnection());
-	}
+    @Override
+    public void sendTo(ServerPlayer player, CustomPacketPayload packet) {
+        channel.send(packet, player.connection.getConnection());
+    }
 
-	@Override
-	public void sendToServer(CustomPacketPayload packet) {
-		channel.send(packet, PacketDistributor.SERVER.noArg());
-	}
+    @Override
+    public void sendToServer(CustomPacketPayload packet) {
+        channel.send(packet, PacketDistributor.SERVER.noArg());
+    }
 }

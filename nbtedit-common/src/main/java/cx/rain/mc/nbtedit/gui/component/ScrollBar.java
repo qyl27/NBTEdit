@@ -1,8 +1,8 @@
 package cx.rain.mc.nbtedit.gui.component;
 
 import cx.rain.mc.nbtedit.utility.ModConstants;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.WidgetSprites;
+import lombok.Getter;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.KeyEvent;
@@ -19,6 +19,7 @@ public class ScrollBar extends AbstractComponent {
 
     private final int scrollUnit = getMinecraft().font.lineHeight + 2;
 
+    @Getter
     private final boolean horizontal;
     private final IScrollHandler toScroll;
     private final int contentLength;
@@ -27,7 +28,9 @@ public class ScrollBar extends AbstractComponent {
      * Offset between scroll-base to the actual viewport start.
      * (In pixels.)
      */
+    @Getter
     private int scrollAmount = 0;
+    @Getter
     private boolean scrolling = false;
 
     public ScrollBar(int x, int y, int width, int height, IScrollHandler toScroll, int contentLength) {
@@ -40,10 +43,6 @@ public class ScrollBar extends AbstractComponent {
         this.horizontal = horizontal;
         this.toScroll = toScroll;
         this.contentLength = contentLength;
-    }
-
-    public boolean isHorizontal() {
-        return horizontal;
     }
 
     public boolean isVertical() {
@@ -68,6 +67,7 @@ public class ScrollBar extends AbstractComponent {
 
     /**
      * Get scroll rate (value between 0 ~ 1).
+     *
      * @return the scroll rate
      */
     public double getScrollRate() {
@@ -76,6 +76,7 @@ public class ScrollBar extends AbstractComponent {
 
     /**
      * Set scroll rate (value between 0 ~ 1).
+     *
      * @param scrollRate the scroll rate
      */
     public void setScrollRate(double scrollRate) {
@@ -85,15 +86,11 @@ public class ScrollBar extends AbstractComponent {
     }
 
     private int getScrollBarLength() {
-        return Mth.clamp((int)((float)(getPrimaryLength() * getPrimaryLength()) / (float)contentLength), 32, getPrimaryLength());
+        return Mth.clamp((int) ((float) (getPrimaryLength() * getPrimaryLength()) / (float) contentLength), 32, getPrimaryLength());
     }
 
     private int getMaxScrollAmount() {
         return Math.max(0, contentLength - getPrimaryLength());
-    }
-
-    public int getScrollAmount() {
-        return scrollAmount;
     }
 
     public void setScrollAmount(int amount) {
@@ -106,7 +103,7 @@ public class ScrollBar extends AbstractComponent {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_BACKGROUND_SPRITE, getX(), getY(), getWidth(), getHeight());
 
         var barLength = this.getScrollBarLength();
@@ -122,10 +119,6 @@ public class ScrollBar extends AbstractComponent {
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         narrationElementOutput.add(NarratedElementType.TITLE, Component.translatable(ModConstants.GUI_TITLE_SCROLL_BAR_NARRATION));
-    }
-
-    public boolean isScrolling() {
-        return scrolling;
     }
 
     @Override

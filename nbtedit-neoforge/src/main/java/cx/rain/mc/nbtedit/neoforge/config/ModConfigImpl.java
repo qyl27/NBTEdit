@@ -19,14 +19,14 @@ public class ModConfigImpl implements IModConfig {
         var builder = new ModConfigSpec.Builder();
 
         builder.comment("General settings.")
-                .push("general");
+            .push("general");
 
         DEBUG = builder
-                .comment("Enable debug logs. Necessary if you are reporting bugs.")
-                .define("debug", false);
+            .comment("Enable debug logs. Necessary if you are reporting bugs.")
+            .define("debug", false);
 
         builder.comment("Override the default permission levels. Like vanilla, should in 0 ~ 4 range.")
-                .push("permission");
+            .push("permission");
 
         for (var p : ModPermission.values()) {
             var spec = builder.defineInRange(p.getNodeName(), p.getDefaultLevel().id(), 0, 4);

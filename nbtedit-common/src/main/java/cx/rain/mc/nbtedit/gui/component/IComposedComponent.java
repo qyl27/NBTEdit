@@ -4,14 +4,13 @@ import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public interface IComposedComponent extends IComponent, ContainerEventHandler {
-    void addChild(@NotNull IComponent child);
+    void addChild(IComponent child);
 
-    void removeChild(@NotNull IComponent child);
+    void removeChild(IComponent child);
 
     List<IComponent> getChildren();
 

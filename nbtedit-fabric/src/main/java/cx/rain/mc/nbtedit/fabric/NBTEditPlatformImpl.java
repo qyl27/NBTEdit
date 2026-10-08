@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.fabric;
 
-import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.api.command.IModPermission;
 import cx.rain.mc.nbtedit.api.command.VanillaModPermission;
 import cx.rain.mc.nbtedit.api.config.IModConfig;
@@ -8,12 +7,14 @@ import cx.rain.mc.nbtedit.api.netowrking.IModNetworking;
 import cx.rain.mc.nbtedit.fabric.command.FabricPermissionApiImpl;
 import cx.rain.mc.nbtedit.fabric.config.ModConfigImpl;
 import cx.rain.mc.nbtedit.fabric.networking.ModNetworkingImpl;
+import lombok.extern.slf4j.Slf4j;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.function.Consumer;
 
+@Slf4j
 public class NBTEditPlatformImpl {
     private static final ModNetworkingImpl NETWORKING = new ModNetworkingImpl();
 
@@ -28,7 +29,7 @@ public class NBTEditPlatformImpl {
             try {
                 if (FabricLoader.getInstance().isModLoaded("fabric-permissions-api-v0")) {
                     impl = FabricPermissionApiImpl.INSTANCE;
-                    NBTEdit.getInstance().getLogger().info("Fabric Permissions API detected, using it.");
+                    log.info("Fabric Permissions API detected, using it.");
                 }
             } catch (Throwable ignored) {
             }

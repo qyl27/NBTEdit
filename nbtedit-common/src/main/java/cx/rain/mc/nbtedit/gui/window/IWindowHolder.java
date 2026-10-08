@@ -1,36 +1,40 @@
 package cx.rain.mc.nbtedit.gui.window;
 
 import cx.rain.mc.nbtedit.gui.component.IComposedComponent;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public interface IWindowHolder extends IComposedComponent {
-    @NotNull
     List<IWindow> getWindows();
-    void addWindow(@NotNull IWindow window, boolean mutex, boolean show);
-    void closeWindow(@NotNull IWindow window);
 
-    void show(@NotNull IWindow window);
-    void hide(@NotNull IWindow window);
+    void addWindow(IWindow window, boolean mutex, boolean show);
+
+    void closeWindow(IWindow window);
+
+    void show(IWindow window);
+
+    void hide(IWindow window);
 
     @Nullable
     IWindow getMutexWindow();
+
     void setMutexWindow(@Nullable IWindow window);
+
     @Nullable
     IWindow getFocusedWindow();
+
     void setFocusedWindow(@Nullable IWindow window);
 
-    default void addWindow(@NotNull IWindow window) {
+    default void addWindow(IWindow window) {
         addWindow(window, false, true);
     }
 
-    default boolean isFocused(@NotNull IWindow window) {
+    default boolean isFocused(IWindow window) {
         return getFocusedWindow() == window;
     }
 
-    default boolean isWindowMutex(@NotNull IWindow window) {
+    default boolean isWindowMutex(IWindow window) {
         return getMutexWindow() == window;
     }
 
@@ -42,7 +46,7 @@ public interface IWindowHolder extends IComposedComponent {
         return !getWindows().isEmpty();
     }
 
-    default boolean hasWindow(@NotNull IWindow window) {
+    default boolean hasWindow(IWindow window) {
         return getWindows().contains(window);
     }
 

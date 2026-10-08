@@ -4,8 +4,7 @@ architectury {
 
 loom {
     forge {
-        convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+        convertAccessWideners(tasks.named('shadowJar'), loom.accessWidenerPath.get().asFile.name)
     }
 
     runs {
@@ -42,15 +41,10 @@ configurations {
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
-    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0-beta.12'
+    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.5'
 
-    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive false }
+    common(project(':nbtedit-common')) { transitive = false }
     shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionForge')
-}
-
-remapJar {
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
 }
 
 unifiedPublishing {
@@ -61,7 +55,7 @@ unifiedPublishing {
         gameLoaders = ['forge']
         releaseType = 'release'
 
-        mainPublication tasks.remapJar
+        mainPublication tasks.shadowJar
 
         curseforge {
             token = Objects.requireNonNullElse(System.getenv('CURSEFORGE_TOKEN'), "")

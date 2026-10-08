@@ -2,7 +2,6 @@ package cx.rain.mc.nbtedit.editor;
 
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -11,9 +10,6 @@ import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
 
 public class AccessibilityHelper {
-    private static Minecraft getMinecraft() {
-        return Minecraft.getInstance();
-    }
 
     public static Component buildText(NbtTree.Node<?> node) {
         return Component.literal(node.getAsString());
@@ -63,11 +59,11 @@ public class AccessibilityHelper {
 
         if (showPreview) {
             var preview = Component.translatable(previewTitle)
-                    .append(Component.literal("\n").withStyle(ChatFormatting.RESET)
-                            .append(previewContent));
+                .append(Component.literal("\n").withStyle(ChatFormatting.RESET)
+                    .append(previewContent));
             var previewNarration = Component.translatable(previewNarrationTitle)
-                    .append(Component.literal("\n").withStyle(ChatFormatting.RESET)
-                            .append(previewContent));
+                .append(Component.literal("\n").withStyle(ChatFormatting.RESET)
+                    .append(previewContent));
 
             return Tooltip.create(preview, previewNarration);
         }

@@ -1,9 +1,10 @@
 package cx.rain.mc.nbtedit.editor;
 
 import net.minecraft.nbt.*;
+import org.jetbrains.annotations.Nullable;
 
 public class EditorHelper {
-    public static Tag newTag(int buttonId) {
+    public static @Nullable Tag newTag(int buttonId) {
         return switch (buttonId) {
             case 0 -> ByteTag.valueOf((byte) 0);
             case 1 -> ShortTag.valueOf((short) 0);
@@ -22,22 +23,20 @@ public class EditorHelper {
     }
 
     public static String newTagName(int buttonId, NbtTree.Node<?> parent) {
-        var type = NbtType.ofButtonId(buttonId);
-        if (!parent.hasChild()) {
-            return type.getTagName() + " 1";
-        }
-
-        for (int i = 1; i <= parent.getChildren().size() + 1; ++i) {
-            String name = type.getTagName() + " " + i;
-            if (isNameValidInNode(name, parent)) {
-                return name;
-            }
-        }
-
-        return type + " INF";
+        return newName(NbtType.ofButtonId(buttonId).getTagName(), parent);
     }
 
-    public static boolean isNameValidInNode(String name, NbtTree.Node<?> parent) {
+    public static String newName(String name, NbtTree.Node<?> parent) {
+        var result = name;
+        int i = 1;
+        while (!isUniqueNameInNode(result, parent)) {
+            result = name + " " + i;
+            i += 1;
+        }
+        return result;
+    }
+
+    public static boolean isUniqueNameInNode(String name, NbtTree.Node<?> parent) {
         for (var node : parent.getChildren()) {
             if (node.getName().equals(name)) {
                 return false;

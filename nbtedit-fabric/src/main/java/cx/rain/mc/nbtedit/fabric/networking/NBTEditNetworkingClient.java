@@ -12,35 +12,35 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public class NBTEditNetworkingClient {
-	public NBTEditNetworkingClient() {
-		ClientPlayNetworking.registerGlobalReceiver(RaytracePacket.TYPE, this::clientHandle);
-		ClientPlayNetworking.registerGlobalReceiver(BlockEntityEditingPacket.TYPE, this::clientHandle);
-		ClientPlayNetworking.registerGlobalReceiver(EntityEditingPacket.TYPE, this::clientHandle);
-		ClientPlayNetworking.registerGlobalReceiver(ItemStackEditingPacket.TYPE, this::clientHandle);
-	}
+    public NBTEditNetworkingClient() {
+        ClientPlayNetworking.registerGlobalReceiver(RaytracePacket.TYPE, this::clientHandle);
+        ClientPlayNetworking.registerGlobalReceiver(BlockEntityEditingPacket.TYPE, this::clientHandle);
+        ClientPlayNetworking.registerGlobalReceiver(EntityEditingPacket.TYPE, this::clientHandle);
+        ClientPlayNetworking.registerGlobalReceiver(ItemStackEditingPacket.TYPE, this::clientHandle);
+    }
 
-	private void clientHandle(RaytracePacket packet, ClientPlayNetworking.Context context) {
-		context.client().execute(() -> NetworkClientHandler.handleRaytrace(packet));
-	}
+    private void clientHandle(RaytracePacket packet, ClientPlayNetworking.Context context) {
+        context.client().execute(() -> NetworkClientHandler.handleRaytrace(packet));
+    }
 
-	private void clientHandle(BlockEntityEditingPacket packet, ClientPlayNetworking.Context context) {
-		context.client().execute(() -> NetworkClientHandler.handleBlockEntityEditing(packet));
-	}
+    private void clientHandle(BlockEntityEditingPacket packet, ClientPlayNetworking.Context context) {
+        context.client().execute(() -> NetworkClientHandler.handleBlockEntityEditing(packet));
+    }
 
-	private void clientHandle(EntityEditingPacket packet, ClientPlayNetworking.Context context) {
-		context.client().execute(() -> NetworkClientHandler.handleEntityEditing(packet));
-	}
+    private void clientHandle(EntityEditingPacket packet, ClientPlayNetworking.Context context) {
+        context.client().execute(() -> NetworkClientHandler.handleEntityEditing(packet));
+    }
 
-	private void clientHandle(ItemStackEditingPacket packet, ClientPlayNetworking.Context context) {
-		context.client().execute(() -> NetworkClientHandler.handleItemStackEditing(packet));
-	}
+    private void clientHandle(ItemStackEditingPacket packet, ClientPlayNetworking.Context context) {
+        context.client().execute(() -> NetworkClientHandler.handleItemStackEditing(packet));
+    }
 
-	public void send(CustomPacketPayload packet) {
+    public void send(CustomPacketPayload packet) {
         if (!ClientPlayNetworking.canSend(packet.type())) {
             Minecraft.getInstance().getChatListener().handleSystemMessage(Component.translatableWithFallback(ModConstants.MESSAGE_MISSING_SERVER_MOD, ModConstants.MESSAGE_MISSING_SERVER_MOD_FALLBACK), false);
             return;
         }
 
-		ClientPlayNetworking.send(packet);
-	}
+        ClientPlayNetworking.send(packet);
+    }
 }

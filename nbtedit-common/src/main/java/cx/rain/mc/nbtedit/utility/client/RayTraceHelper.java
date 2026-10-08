@@ -14,7 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.*;
-import org.jetbrains.annotations.NotNull;
 
 public class RayTraceHelper {
     public static void doRayTrace() {
@@ -35,13 +34,13 @@ public class RayTraceHelper {
         } else if (!player.getMainHandItem().isEmpty()) {
             NBTEditPlatform.getNetworking().sendToServer(new ItemStackRaytraceResultPacket(player.getMainHandItem()));
         } else {
-            player.displayClientMessage(Component
-                    .translatable(ModConstants.MESSAGE_NOTHING_TO_EDIT)
-                    .withStyle(ChatFormatting.RED), false);
+            player.sendSystemMessage(Component
+                .translatable(ModConstants.MESSAGE_NOTHING_TO_EDIT)
+                .withStyle(ChatFormatting.RED));
         }
     }
 
-    private static @NotNull HitResult pick(Entity entity, double blockInteractionRange, double entityInteractionRange, float partialTick) {
+    private static HitResult pick(Entity entity, double blockInteractionRange, double entityInteractionRange, float partialTick) {
         double d = Math.max(blockInteractionRange, entityInteractionRange);
         double e = Mth.square(d);
         var eye = entity.getEyePosition(partialTick);
@@ -55,10 +54,10 @@ public class RayTraceHelper {
         var view = entity.getViewVector(partialTick);
         var eyeView = eye.add(view.x * d, view.y * d, view.z * d);
         var box = entity.getBoundingBox().expandTowards(view.scale(d)).inflate(1.0);
-        var entityHitResult = ProjectileUtil.getEntityHitResult(entity, eye, eyeView, box, __ -> true, e);
+        var entityHitResult = ProjectileUtil.getEntityHitResult(entity, eye, eyeView, box, _ -> true, e);
         return entityHitResult != null && entityHitResult.getLocation().distanceToSqr(eye) < f
-                ? filterHitResult(entityHitResult, eye, entityInteractionRange)
-                : filterHitResult(hitResult, eye, blockInteractionRange);
+            ? filterHitResult(entityHitResult, eye, entityInteractionRange)
+            : filterHitResult(hitResult, eye, blockInteractionRange);
     }
 
     private static HitResult filterHitResult(HitResult hitResult, Vec3 pos, double blockInteractionRange) {

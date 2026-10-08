@@ -3,7 +3,10 @@ package cx.rain.mc.nbtedit.editor;
 import com.google.common.base.Strings;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cx.rain.mc.nbtedit.editor.tag.TagParseHelper;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,10 +65,15 @@ public class NbtTree {
 
     @SuppressWarnings("unchecked")
     public static class Node<T extends Tag> {
+        @Getter
+        @Setter
         private String name;
-        private T nbtTag;
+        @Getter
+        private T tag;
 
-        private Node<? extends Tag> parent = null;
+        @Getter
+        private @Nullable Node<? extends Tag> parent = null;
+        @Getter
         private final List<Node<Tag>> children = new ArrayList<>();
         private boolean shouldShowChildren = false;
 
@@ -77,28 +85,16 @@ public class NbtTree {
             this(name, tag, null);
         }
 
-        private Node(String name, T tag, Node<?> parentTag) {
+        private Node(String name, T tag, @Nullable Node<?> parentTag) {
             this.name = name;
-            this.nbtTag = tag;
+            this.tag = tag;
             this.parent = parentTag;
 
             walkThough(tag);
         }
 
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public T getTag() {
-            return nbtTag;
-        }
-
         public void setTag(Tag tag) {
-            nbtTag = (T) tag;
+            this.tag = (T) tag;
         }
 
         private void walkThough(Tag tag) {
@@ -150,20 +146,12 @@ public class NbtTree {
             return !children.isEmpty();
         }
 
-        public List<Node<Tag>> getChildren() {
-            return children;
-        }
-
         public boolean hasParent() {
             return parent != null;
         }
 
         public boolean isRoot() {
             return !hasParent();
-        }
-
-        public Node<?> getParent() {
-            return parent;
         }
 
         public boolean shouldShowChildren() {
@@ -201,7 +189,7 @@ public class NbtTree {
         public static final String TAG_LIST_TYPE = "elementType";
         public static final String TAG_VALUE = "value";
 
-        public static Node<Tag> fromString(String data) {
+        public static @Nullable Node<Tag> fromString(String data) {
             try {
                 var tag = TagParser.parseCompoundFully(data);
                 var nameOptional = tag.getString(TAG_NAME);
@@ -228,10 +216,10 @@ public class NbtTree {
         public String asString() {
             var tag = new CompoundTag();
             tag.putString(TAG_NAME, name);
-            tag.put(TAG_VALUE, nbtTag);
-            tag.putByte(TAG_TYPE, nbtTag.getId());
+            tag.put(TAG_VALUE, this.tag);
+            tag.putByte(TAG_TYPE, this.tag.getId());
 
-            if (nbtTag instanceof ListTag listTag) {
+            if (this.tag instanceof ListTag listTag) {
                 tag.putByte(TAG_LIST_TYPE, TagParseHelper.getListElementType(listTag));
             }
             return TagParseHelper.getAsString(tag);

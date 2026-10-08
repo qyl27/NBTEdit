@@ -1,18 +1,21 @@
 package cx.rain.mc.nbtedit.gui.component;
 
-import net.minecraft.client.gui.GuiGraphics;
+import lombok.Getter;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 public class ScrollableViewport extends AbstractComposedComponent {
 
+    @Getter
     private final int scrollBarWidth;
 
-    private ScrollBar verticalScrollBar = null;
-    private ScrollBar horizontalScrollBar = null;
+    private @Nullable ScrollBar verticalScrollBar = null;
+    private @Nullable ScrollBar horizontalScrollBar = null;
 
     private int contentWidth = 0;
     private int contentHeight = 0;
@@ -53,16 +56,16 @@ public class ScrollableViewport extends AbstractComposedComponent {
         if (contentHeight > getHeight()) {
             var amount = verticalScrollBar != null ? verticalScrollBar.getScrollAmount() : 0;
             verticalScrollBar = new ScrollBar(getX() + getWidth() - getScrollBarWidth(), getY(),
-                    getScrollBarWidth(), getHeight(),
-                    d -> {}, contentHeight);
+                getScrollBarWidth(), getHeight(),
+                _ -> {}, contentHeight);
             verticalScrollBar.setScrollAmount(amount);
         }
 
         if (contentWidth > getWidth()) {
             var amount = horizontalScrollBar != null ? horizontalScrollBar.getScrollAmount() : 0;
             horizontalScrollBar = new ScrollBar(getX(), getY() + getHeight() - getScrollBarWidth(),
-                    getWidth() - (shouldShowVerticalBar() ? getScrollBarWidth() : 0), getScrollBarWidth(),
-                    d -> {}, contentWidth, true);
+                getWidth() - (shouldShowVerticalBar() ? getScrollBarWidth() : 0), getScrollBarWidth(),
+                _ -> {}, contentWidth, true);
             horizontalScrollBar.setScrollAmount(amount);
         }
     }
@@ -76,7 +79,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         var maskedMouseX = (int) getMaskedX(mouseX);
         var maskedMouseY = (int) getMaskedY(mouseY);
 
@@ -87,26 +90,22 @@ public class ScrollableViewport extends AbstractComposedComponent {
         guiGraphics.enableScissor(getX(), getY(), maxX, maxY);
         guiGraphics.pose().translate(getX() - getScrollXOffset(), getY() - getScrollYOffset());
 
-        super.renderWidget(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
+        super.extractWidgetRenderState(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
 
         guiGraphics.disableScissor();
         guiGraphics.pose().popMatrix();
 
         if (shouldShowVerticalBar()) {
-            verticalScrollBar.render(guiGraphics, mouseX, mouseY, partialTick);
+            verticalScrollBar.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         }
 
         if (shouldShowHorizontalBar()) {
-            horizontalScrollBar.render(guiGraphics, mouseX, mouseY, partialTick);
+            horizontalScrollBar.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         }
     }
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-    }
-
-    public int getScrollBarWidth() {
-        return scrollBarWidth;
     }
 
     public int getScrollXOffset() {

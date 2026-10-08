@@ -7,7 +7,6 @@ import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -25,7 +24,8 @@ public interface IComponent extends Renderable, GuiEventListener, LayoutElement,
     default void unInitialize() {
     }
 
-    IComposedComponent getParent();
+    @Nullable IComposedComponent getParent();
+
     void setParent(@Nullable IComposedComponent parent);
 
     boolean isHovered();
@@ -35,12 +35,12 @@ public interface IComponent extends Renderable, GuiEventListener, LayoutElement,
     }
 
     @Override
-    default @NotNull ScreenRectangle getRectangle() {
+    default ScreenRectangle getRectangle() {
         return new ScreenRectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
     }
 
     @Override
-    default @NotNull NarrationPriority narrationPriority() {
+    default NarrationPriority narrationPriority() {
         if (this.isFocused()) {
             return NarrationPriority.FOCUSED;
         } else {

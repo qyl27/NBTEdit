@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.networking;
 
-import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.networking.packet.c2s.BlockEntityRaytraceResultPacket;
 import cx.rain.mc.nbtedit.networking.packet.c2s.EntityRaytraceResultPacket;
 import cx.rain.mc.nbtedit.networking.packet.c2s.ItemStackRaytraceResultPacket;
@@ -10,6 +9,7 @@ import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
 import cx.rain.mc.nbtedit.utility.LoggingHelper;
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import cx.rain.mc.nbtedit.utility.RegistryContextSerializeHelper;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
@@ -18,9 +18,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 
+@Slf4j
 public class NetworkServerHandler {
     public static void handleBlockEntityResult(ServerPlayer player, BlockEntityRaytraceResultPacket packet) {
         NetworkEditingHelper.editBlockEntity(player, packet.pos());
@@ -54,35 +54,35 @@ public class NetworkServerHandler {
                 try {
                     var input = RegistryContextSerializeHelper.createTagValueInput(server.registryAccess(), tag);
                     blockEntity.loadWithComponents(input);
-                    blockEntity.setChanged();	// Ensure changes gets saved to disk later on. (qyl27: In MCP it is markDirty.)
+                    blockEntity.setChanged();    // Ensure changes gets saved to disk later on. (qyl27: In MCP it is markDirty.)
                     if (blockEntity.hasLevel() && blockEntity.getLevel() instanceof ServerLevel) {
-                        ((ServerLevel) blockEntity.getLevel()).getChunkSource().blockChanged(pos);	// Broadcast changes.
+                        ((ServerLevel) blockEntity.getLevel()).getChunkSource().blockChanged(pos);    // Broadcast changes.
                     }
 
-                    NBTEdit.getInstance().getLogger().info("Player {} successfully edited the tag of a BlockEntity at {} {} {}.",
-                            player.getName().getString(), pos.getX(), pos.getY(), pos.getZ());
+                    log.info("Player {} successfully edited the tag of a BlockEntity at {} {} {}.",
+                        player.getName().getString(), pos.getX(), pos.getY(), pos.getZ());
 
 
                     LoggingHelper.debugBlockEntityTag(pos, tag);
 
                     player.sendSystemMessage(Component
-                            .translatable(ModConstants.MESSAGE_SAVING_SUCCESSFUL)
-                            .withStyle(ChatFormatting.GREEN));
+                        .translatable(ModConstants.MESSAGE_SAVING_SUCCESSFUL)
+                        .withStyle(ChatFormatting.GREEN));
                 } catch (Exception ex) {
                     player.sendSystemMessage(Component
-                            .translatable(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT)
-                            .withStyle(ChatFormatting.RED));
+                        .translatable(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT)
+                        .withStyle(ChatFormatting.RED));
 
-                    NBTEdit.getInstance().getLogger().error("Player {} edited the tag of BlockEntity at XYZ {} {} {} and caused an exception!",
-                            player.getName().getString(), pos.getX(), pos.getY(), pos.getZ());
+                    log.error("Player {} edited the tag of BlockEntity at XYZ {} {} {} and caused an exception!",
+                        player.getName().getString(), pos.getX(), pos.getY(), pos.getZ());
 
                     LoggingHelper.errorParsingTag(ex, tag);
                 }
             } else {
-                NBTEdit.getInstance().getLogger().info("Player {} tried to edit a non-existent BlockEntity at {} {} {}.",
-                        player.getName(), pos.getX(), pos.getY(), pos.getZ());
+                log.info("Player {} tried to edit a non-existent BlockEntity at {} {} {}.",
+                    player.getName(), pos.getX(), pos.getY(), pos.getZ());
                 player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_FAILED_BLOCK_ENTITY_NOT_EXISTS)
-                        .withStyle(ChatFormatting.RED));
+                    .withStyle(ChatFormatting.RED));
             }
         });
     }
@@ -102,10 +102,10 @@ public class NetworkServerHandler {
 
             if (entity != null) {
                 if (entity instanceof Player
-                        && entity != player
-                        && !NetworkingHelper.checkEditOnPlayerPermission(player)) {
-                    NBTEdit.getInstance().getLogger().info("Player {} tried to use nbtedit on a player which is not allowed",
-                            player.getName().getString());
+                    && entity != player
+                    && !NetworkingHelper.checkEditOnPlayerPermission(player)) {
+                    log.info("Player {} tried to use nbtedit on a player which is not allowed",
+                        player.getName().getString());
                     return;
                 }
 
@@ -117,8 +117,8 @@ public class NetworkServerHandler {
 
                     var input = RegistryContextSerializeHelper.createTagValueInput(server.registryAccess(), tag);
                     entity.load(input);
-                    NBTEdit.getInstance().getLogger().info("Player {} edited the tag of Entity with UUID {} .",
-                            player.getName().getString(), entityUuid);
+                    log.info("Player {} edited the tag of Entity with UUID {} .",
+                        player.getName().getString(), entityUuid);
 
                     LoggingHelper.debugEntityTag(entityUuid, tag);
 
@@ -134,36 +134,36 @@ public class NetworkServerHandler {
                             targetPlayer.setGameMode(gameMode);
                         }
                         targetPlayer.connection.send(new ClientboundSetHealthPacket(targetPlayer.getHealth(),
-                                targetPlayer.getFoodData().getFoodLevel(),
-                                targetPlayer.getFoodData().getSaturationLevel()));
+                            targetPlayer.getFoodData().getFoodLevel(),
+                            targetPlayer.getFoodData().getSaturationLevel()));
                         targetPlayer.connection.send(new ClientboundSetExperiencePacket(
-                                targetPlayer.experienceProgress,
-                                targetPlayer.totalExperience,
-                                targetPlayer.experienceLevel));
+                            targetPlayer.experienceProgress,
+                            targetPlayer.totalExperience,
+                            targetPlayer.experienceLevel));
 
                         targetPlayer.onUpdateAbilities();
                         targetPlayer.setPos(targetPlayer.getX(), targetPlayer.getY(), targetPlayer.getZ());
                     }
 
                     player.sendSystemMessage(Component
-                            .translatable(ModConstants.MESSAGE_SAVING_SUCCESSFUL)
-                            .withStyle(ChatFormatting.GREEN));
+                        .translatable(ModConstants.MESSAGE_SAVING_SUCCESSFUL)
+                        .withStyle(ChatFormatting.GREEN));
                 } catch (Exception ex) {
                     player.sendSystemMessage(Component
-                            .translatable(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT)
-                            .withStyle(ChatFormatting.RED));
+                        .translatable(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT)
+                        .withStyle(ChatFormatting.RED));
 
-                    NBTEdit.getInstance().getLogger().error("Player {} edited the tag of entity {} and caused an exception!",
-                            player.getName().getString(), entityUuid);
+                    log.error("Player {} edited the tag of entity {} and caused an exception!",
+                        player.getName().getString(), entityUuid);
 
                     LoggingHelper.errorParsingTag(ex, tag);
                 }
             } else {
-                NBTEdit.getInstance().getLogger().info("Player {} tried to edit a non-existent entity {}.",
-                        player.getName(), entityUuid);
+                log.info("Player {} tried to edit a non-existent entity {}.",
+                    player.getName(), entityUuid);
                 player.sendSystemMessage(Component
-                        .translatable(ModConstants.MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS)
-                        .withStyle(ChatFormatting.RED));
+                    .translatable(ModConstants.MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS)
+                    .withStyle(ChatFormatting.RED));
             }
         });
     }
@@ -183,19 +183,19 @@ public class NetworkServerHandler {
                 var item = optional.orElseThrow();
                 player.setItemInHand(InteractionHand.MAIN_HAND, item);
 
-                NBTEdit.getInstance().getLogger().info("Player {} successfully edited the tag of a ItemStack named {}.",
-                        player.getName().getString(), itemStack.getDisplayName().getString());
+                log.info("Player {} successfully edited the tag of a ItemStack named {}.",
+                    player.getName().getString(), itemStack.getDisplayName().getString());
 
                 LoggingHelper.debugItemStackTag(player, tag);
 
                 player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_SUCCESSFUL)
-                        .withStyle(ChatFormatting.GREEN));
+                    .withStyle(ChatFormatting.GREEN));
             } catch (Exception ex) {
                 player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT)
-                        .withStyle(ChatFormatting.RED));
+                    .withStyle(ChatFormatting.RED));
 
-                NBTEdit.getInstance().getLogger().error("Player {} edited the tag of ItemStack named {} and caused an exception!",
-                        player.getName().getString(), itemStack.getDisplayName().getString());
+                log.error("Player {} edited the tag of ItemStack named {} and caused an exception!",
+                    player.getName().getString(), itemStack.getDisplayName().getString());
 
                 LoggingHelper.errorParsingTag(ex, tag);
             }

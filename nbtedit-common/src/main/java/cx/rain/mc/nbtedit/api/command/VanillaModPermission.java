@@ -32,6 +32,6 @@ public class VanillaModPermission implements IModPermission {
         });
 
         return permissionSet.hasPermission(overriddenLevel)
-                || permissionSet.hasPermission(permission.getAtomPermission());
+            || permissionSet.hasPermission(permission.getAtomPermission());
     }
 }

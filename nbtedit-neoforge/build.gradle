@@ -3,6 +3,10 @@ architectury {
 }
 
 loom {
+    neoForge {
+        convertAccessWideners(tasks.named('shadowJar'), loom.accessWidenerPath.get().asFile.name)
+    }
+
     runs {
         client {
             client()
@@ -27,7 +31,7 @@ loom {
 
         clientData {
             clientData()
-
+            runDir 'run/data'
             programArgs '--all', '--mod', 'nbtedit'
             programArgs '--output', file('../nbtedit-common/src/generated/resources').absolutePath
             programArgs '--existing', file('../nbtedit-common/src/main/resources').absolutePath
@@ -42,25 +46,19 @@ configurations {
 dependencies {
     neoForge "net.neoforged:neoforge:${project.neoforge_version}"
 
-    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive false }
+    common(project(':nbtedit-common')) { transitive = false }
     shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionNeoForge')
-}
-
-remapJar {
-    atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
 }
 
 unifiedPublishing {
     project {
         displayName = "NBTEdit NeoForge ${project.minecraft_version}-${project.mod_version}"
         version = "${publishVersion}-neoforge"
-        gameVersions = [project.minecraft_version]
+        gameVersions = rootProject.game_versions.split(',') as List
         gameLoaders = ['neoforge']
         releaseType = 'release'
 
-        mainPublication tasks.remapJar
+        mainPublication tasks.shadowJar
 
         curseforge {
             token = Objects.requireNonNullElse(System.getenv('CURSEFORGE_TOKEN'), "")

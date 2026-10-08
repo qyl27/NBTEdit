@@ -18,35 +18,39 @@ public class NodeParser {
     public static <T extends Tag> Tag getTag(NbtTree.Node<T> node, String value) {
         Tag tag = node.getTag();
         try {
-            if (tag instanceof ByteTag) {
-                return ByteTag.valueOf(parseByte(value));
-            }
-            if (tag instanceof ShortTag) {
-                return ShortTag.valueOf(parseShort(value));
-            }
-            if (tag instanceof IntTag) {
-                return IntTag.valueOf(parseInt(value));
-            }
-            if (tag instanceof LongTag) {
-                return LongTag.valueOf(parseLong(value));
-            }
-            if (tag instanceof FloatTag) {
-                return FloatTag.valueOf(parseFloat(value));
-            }
-            if (tag instanceof DoubleTag) {
-                return DoubleTag.valueOf(parseDouble(value));
-            }
-            if (tag instanceof ByteArrayTag) {
-                return new ByteArrayTag(parseByteArray(value));
-            }
-            if (tag instanceof IntArrayTag) {
-                return new IntArrayTag(parseIntArray(value));
-            }
-            if (tag instanceof LongArrayTag) {
-                return new LongArrayTag(parseLongArray(value));
-            }
-            if (tag instanceof StringTag) {
-                return StringTag.valueOf(value);
+            switch (tag) {
+                case ByteTag _ -> {
+                    return ByteTag.valueOf(parseByte(value));
+                }
+                case ShortTag _ -> {
+                    return ShortTag.valueOf(parseShort(value));
+                }
+                case IntTag _ -> {
+                    return IntTag.valueOf(parseInt(value));
+                }
+                case LongTag _ -> {
+                    return LongTag.valueOf(parseLong(value));
+                }
+                case FloatTag _ -> {
+                    return FloatTag.valueOf(parseFloat(value));
+                }
+                case DoubleTag _ -> {
+                    return DoubleTag.valueOf(parseDouble(value));
+                }
+                case ByteArrayTag _ -> {
+                    return new ByteArrayTag(parseByteArray(value));
+                }
+                case IntArrayTag _ -> {
+                    return new IntArrayTag(parseIntArray(value));
+                }
+                case LongArrayTag _ -> {
+                    return new LongArrayTag(parseLongArray(value));
+                }
+                case StringTag _ -> {
+                    return StringTag.valueOf(value);
+                }
+                default -> {
+                }
             }
         } catch (Exception ignored) {
         }
@@ -136,7 +140,7 @@ public class NodeParser {
             }
             return arr;
         } catch (NumberFormatException e) {
-            return new byte[] {0};
+            return new byte[]{0};
         }
     }
 
@@ -150,7 +154,7 @@ public class NodeParser {
             }
             return arr;
         } catch (NumberFormatException e) {
-            return new int[] {0};
+            return new int[]{0};
         }
     }
 

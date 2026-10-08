@@ -1,8 +1,10 @@
 package cx.rain.mc.nbtedit.editor;
 
 import cx.rain.mc.nbtedit.utility.ModConstants;
+import lombok.Getter;
 import net.minecraft.network.chat.Component;
 
+@Getter
 public enum NbtType {
     BYTE(1, ModConstants.NBT_TYPE_BYTE, "Byte"),
     SHORT(2, ModConstants.NBT_TYPE_SHORT, "Short"),
@@ -26,18 +28,6 @@ public enum NbtType {
         this.id = id;
         this.name = Component.translatable(name);
         this.tagName = tagName;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public Component getName() {
-        return name;
-    }
-
-    public String getTagName() {
-        return tagName;
     }
 
     public static NbtType of(int id) {

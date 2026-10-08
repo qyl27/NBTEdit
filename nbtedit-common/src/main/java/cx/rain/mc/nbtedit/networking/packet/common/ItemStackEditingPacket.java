@@ -7,19 +7,19 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
-public record ItemStackEditingPacket(CompoundTag tag, boolean readOnly, ItemStack itemStack) implements CustomPacketPayload {
+public record ItemStackEditingPacket(CompoundTag tag, boolean readOnly,
+                                     ItemStack itemStack) implements CustomPacketPayload {
     public static final Type<ItemStackEditingPacket> TYPE = new Type<>(NetworkingConstants.ITEM_STACK_EDITING_ID);
     public static final StreamCodec<RegistryFriendlyByteBuf, ItemStackEditingPacket> CODEC = StreamCodec.composite(
-            ByteBufCodecs.COMPOUND_TAG, ItemStackEditingPacket::tag,
-            ByteBufCodecs.BOOL, ItemStackEditingPacket::readOnly,
-            ItemStack.STREAM_CODEC, ItemStackEditingPacket::itemStack,
-            ItemStackEditingPacket::new
+        ByteBufCodecs.COMPOUND_TAG, ItemStackEditingPacket::tag,
+        ByteBufCodecs.BOOL, ItemStackEditingPacket::readOnly,
+        ItemStack.STREAM_CODEC, ItemStackEditingPacket::itemStack,
+        ItemStackEditingPacket::new
     );
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

@@ -12,7 +12,7 @@ import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.editor.ClipboardHelper;
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.KeyEvent;
@@ -21,13 +21,12 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.nbt.CollectionTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Util;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class EditorScreen extends AbstractScreen {
@@ -36,8 +35,8 @@ public class EditorScreen extends AbstractScreen {
     private final Consumer<CompoundTag> onSave;
     private final boolean readOnly;
 
-    private ScrollableViewport treeViewport;
-    private NbtTreeView treeView;
+    private @Nullable ScrollableViewport treeViewport;
+    private @Nullable NbtTreeView treeView;
 
     public EditorScreen(CompoundTag tag, Component title, Consumer<CompoundTag> onSave, boolean readOnly) {
         super(readOnly ? Component.translatable(ModConstants.GUI_TITLE_EDITOR_READ_ONLY).append(title) : title);
@@ -60,29 +59,29 @@ public class EditorScreen extends AbstractScreen {
 
         ButtonComponent saveButton;
         if (!readOnly) {
-            saveButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_SAVE), b -> onSave())
-                    .pos(width / 4 - 100, height - 27)
-                    .size(200, 20)
-                    .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
-                    .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
-                    .build();
+            saveButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_SAVE), _ -> onSave())
+                .pos(width / 4 - 100, height - 27)
+                .size(200, 20)
+                .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
+                .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
+                .build();
         } else {
-            saveButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_SAVE), b -> {})
-                    .pos(width / 4 - 100, height - 27)
-                    .size(200, 20)
-                    .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE_DISABLED)))
-                    .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE_DISABLED)))
-                    .build();
+            saveButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_SAVE), _ -> {})
+                .pos(width / 4 - 100, height - 27)
+                .size(200, 20)
+                .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE_DISABLED)))
+                .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE_DISABLED)))
+                .build();
             saveButton.active = false;
         }
         addChild(saveButton);
 
-        var quitButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_QUIT), b -> onQuit())
-                .pos(width * 3 / 4 - 100, height - 27)
-                .size(200, 20)
-                .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_QUIT)))
-                .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_QUIT)))
-                .build();
+        var quitButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_QUIT), _ -> onQuit())
+            .pos(width * 3 / 4 - 100, height - 27)
+            .size(200, 20)
+            .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_QUIT)))
+            .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_QUIT)))
+            .build();
         addChild(quitButton);
 
         initButtons();
@@ -96,13 +95,13 @@ public class EditorScreen extends AbstractScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBlurredBackground(guiGraphics);
-        renderMenuBackground(guiGraphics, 0, 0, width, 40);
-        renderMenuBackground(guiGraphics, 0, height - 35, width, height);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        extractBlurredBackground(guiGraphics);
+        extractMenuBackground(guiGraphics, 0, 0, width, 40);
+        extractMenuBackground(guiGraphics, 0, height - 35, width, height);
     }
 
-    /// <editor-fold desc="Buttons.">
+    // region Buttons
 
     private final EditorButtonComponent[] editorButtons = new EditorButtonComponent[17];
 
@@ -110,25 +109,25 @@ public class EditorScreen extends AbstractScreen {
         int xLoc = 18;
         int yLoc = 15;
 
-        buildButton(EditorButton.COPY, xLoc, yLoc, b -> onCopy());
+        buildButton(EditorButton.COPY, xLoc, yLoc, _ -> onCopy());
 
         xLoc += 15;
-        buildButton(EditorButton.CUT, xLoc, yLoc, b -> onCut());
+        buildButton(EditorButton.CUT, xLoc, yLoc, _ -> onCut());
 
         xLoc += 15;
-        buildButton(EditorButton.PASTE, xLoc, yLoc, b -> onPaste());
+        buildButton(EditorButton.PASTE, xLoc, yLoc, _ -> onPaste());
 
         xLoc += 15;
-        buildButton(EditorButton.DELETE, xLoc, yLoc, b -> onDelete());
+        buildButton(EditorButton.DELETE, xLoc, yLoc, _ -> onDelete());
 
         xLoc += 54;
-        buildButton(EditorButton.EDIT, xLoc, yLoc, b -> onEdit());
+        buildButton(EditorButton.EDIT, xLoc, yLoc, _ -> onEdit());
 
         xLoc = 18;
         yLoc = 27;
         for (var i = 0; i < 12; i++) {
             int id = i;
-            buildAddButton(EditorButton.of(id), xLoc, yLoc, b -> onAddButtonsClick(id));
+            buildAddButton(EditorButton.of(id), xLoc, yLoc, _ -> onAddButtonsClick(id));
             xLoc += 9;
         }
 
@@ -181,6 +180,7 @@ public class EditorScreen extends AbstractScreen {
     }
 
     protected void onAddButtonsClick(int id) {
+        NbtTree.Node<?> newChild = null;
         if (id >= 0 && id <= 12) {
             var focused = treeView.getFocusedNode();
             if (focused != null) {
@@ -189,19 +189,22 @@ public class EditorScreen extends AbstractScreen {
 
                 if (focused.getTag() instanceof ListTag) {
                     if (tag != null) {
-                        var newChild = focused.newChild("", tag);
-                        treeView.setFocusedNode(newChild);
+                        newChild = focused.newChild("", tag);
                     }
                 } else {
                     if (tag != null) {
-                        var newChild = focused.newChild(EditorHelper.newTagName(id, focused), tag);
-                        treeView.setFocusedNode(newChild);
+                        newChild = focused.newChild(EditorHelper.newTagName(id, focused), tag);
                     }
                 }
             }
         }
 
         update(true);
+
+        if (newChild != null) {
+            treeView.setFocusedNode(newChild);
+            updateButtons();
+        }
     }
 
     private void onSave() {
@@ -236,7 +239,7 @@ public class EditorScreen extends AbstractScreen {
             pasteButton.active = ClipboardHelper.getNode() != null;
         } else if (nodeToFocus.getTag() instanceof ListTag) {
             if (nodeToFocus.hasChild()) {
-                var elementType = nodeToFocus.getChildren().get(0).getTag().getId();
+                var elementType = nodeToFocus.getChildren().getFirst().getTag().getId();
                 inactiveAllButtons();
 
                 editorButtons[elementType - 1].setActive(true);
@@ -270,9 +273,9 @@ public class EditorScreen extends AbstractScreen {
         }
     }
 
-    /// </editor-fold>
+    // endregion
 
-    /// <editor-fold desc="Editor logic.">
+    // region Editor logic
 
     private void update(boolean centerFocused) {
         update();
@@ -298,8 +301,8 @@ public class EditorScreen extends AbstractScreen {
         var tag = focused.getTag();
         var parent = focused.getParent().getTag();
         var editor = new EditingWindow((width - EditingWindow.WIDTH) / 2, (height - EditingWindow.HEIGHT) / 2, focused,
-                !(parent instanceof ListTag),
-                !(tag instanceof CompoundTag || tag instanceof ListTag));
+            !(parent instanceof ListTag),
+            !(tag instanceof CompoundTag || tag instanceof ListTag));
         addWindow(editor, true, true);
     }
 
@@ -324,7 +327,7 @@ public class EditorScreen extends AbstractScreen {
         if (focused != null) {
             var tag = focused.getTag();
             if (!(tag instanceof CompoundTag)
-                    && !(tag instanceof CollectionTag)) {
+                && !(tag instanceof CollectionTag)) {
                 Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
                 return;
             }
@@ -336,19 +339,14 @@ public class EditorScreen extends AbstractScreen {
                 if (focused.getTag() instanceof ListTag) {
                     toPaste.setName("");
                 } else {
-                    String name = "Paste";
-                    List<NbtTree.Node<Tag>> children = focused.getChildren();
-                    for (int i = 1; i < children.size(); i++) {
-                        var child = children.get(i);
-                        if (!EditorHelper.isNameValidInNode(name, child)) {
-                            toPaste.setName("Paste " + i);
-                        }
-                    }
+                    toPaste.setName(EditorHelper.newName(toPaste.getName(), focused));
                 }
 
                 focused.addChild((NbtTree.Node) toPaste);
-                treeView.setFocusedNode(toPaste);
                 update(true);
+
+                treeView.setFocusedNode(toPaste);
+                updateButtons();
             }
         } else {
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
@@ -374,9 +372,9 @@ public class EditorScreen extends AbstractScreen {
         minecraft.cursorEntered();
     }
 
-    /// </editor-fold>
+    // endregion
 
-    /// <editor-fold desc="Handle input">
+    // region Handle input
 
     private long lastClickTime = 0;
 
@@ -439,7 +437,7 @@ public class EditorScreen extends AbstractScreen {
             }
 
             if ((keyCode == GLFW.GLFW_KEY_D && modifiers == GLFW.GLFW_MOD_CONTROL)
-                    || (keyCode == GLFW.GLFW_KEY_DELETE)) {
+                || (keyCode == GLFW.GLFW_KEY_DELETE)) {
                 if (getFocused() != null) {
                     doDelete();
                     update(true);
@@ -468,5 +466,5 @@ public class EditorScreen extends AbstractScreen {
         return super.keyPressed(event);
     }
 
-    /// </editor-fold>
+    // endregion
 }

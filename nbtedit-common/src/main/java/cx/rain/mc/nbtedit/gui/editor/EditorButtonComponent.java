@@ -2,11 +2,10 @@ package cx.rain.mc.nbtedit.gui.editor;
 
 import cx.rain.mc.nbtedit.editor.EditorButton;
 import cx.rain.mc.nbtedit.gui.component.ButtonComponent;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 
@@ -32,14 +31,14 @@ public class EditorButtonComponent extends ButtonComponent {
 
     public boolean isHover(int mouseX, int mouseY) {
         return isActive()
-                && mouseX >= getX()
-                && mouseY >= getY()
-                && mouseX < getX() + getWidth()
-                && mouseY < getY() + getHeight();
+            && mouseX >= getX()
+            && mouseY >= getY()
+            && mouseX < getX() + getWidth()
+            && mouseY < getY() + getHeight();
     }
 
     @Override
-    protected void renderContents(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (isHover(mouseX, mouseY)) {
             guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x80ffffff);
         }

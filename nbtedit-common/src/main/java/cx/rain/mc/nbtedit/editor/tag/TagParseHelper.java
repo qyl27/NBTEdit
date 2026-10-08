@@ -2,7 +2,6 @@ package cx.rain.mc.nbtedit.editor.tag;
 
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.*;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -66,7 +65,7 @@ public class TagParseHelper {
         };
     }
 
-    public static byte getListElementType(@NotNull ListTag list) {
+    public static byte getListElementType(ListTag list) {
         byte type = 0;
 
         for (var e : list) {
@@ -81,11 +80,11 @@ public class TagParseHelper {
         return type;
     }
 
-    public static String getAsString(@NotNull Tag tag) {
+    public static String getAsString(Tag tag) {
         return tag.toString();
     }
 
-    public static String getValueAsString(@NotNull Tag tag) {
+    public static String getValueAsString(Tag tag) {
         switch (tag) {
             case ByteTag b -> {
                 return Byte.toString(b.byteValue());
@@ -136,19 +135,19 @@ public class TagParseHelper {
         }
     }
 
-    public static void putUuid(@NotNull CompoundTag tag, @NotNull String name, @NotNull UUID uuid) {
+    public static void putUuid(CompoundTag tag, String name, UUID uuid) {
         tag.store(name, UUIDUtil.CODEC, uuid);
     }
 
-    public static @Nullable UUID getUuid(@NotNull CompoundTag tag, @NotNull String name) {
+    public static @Nullable UUID getUuid(CompoundTag tag, String name) {
         return tag.read(name, UUIDUtil.CODEC).orElse(null);
     }
 
-    public static @Nullable UUID loadUuid(@NotNull Tag tag) {
+    public static @Nullable UUID loadUuid(Tag tag) {
         return UUIDUtil.CODEC.parse(NbtOps.INSTANCE, tag).mapOrElse(u -> u, e -> null);
     }
 
-    public static @Nullable Tag createUuid(@NotNull UUID uuid) {
+    public static @Nullable Tag createUuid(UUID uuid) {
         return UUIDUtil.CODEC.encodeStart(NbtOps.INSTANCE, uuid).mapOrElse(i -> i, e -> null);
     }
 }

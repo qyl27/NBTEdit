@@ -10,13 +10,14 @@ import cx.rain.mc.nbtedit.gui.window.AbstractWindow;
 import cx.rain.mc.nbtedit.gui.window.IWindowHolder;
 import cx.rain.mc.nbtedit.utility.IdentifierHelper;
 import cx.rain.mc.nbtedit.utility.ModConstants;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.UUID;
@@ -30,8 +31,8 @@ public class EditingWindow extends AbstractWindow {
     private final boolean nameEditable;
     private final boolean valueEditable;
 
-    private EditBoxComponent nameField;
-    private EditBoxComponent valueField;
+    private @Nullable EditBoxComponent nameField;
+    private @Nullable EditBoxComponent valueField;
 
     private boolean parseAsUuid = false;
 
@@ -70,7 +71,7 @@ public class EditingWindow extends AbstractWindow {
         clearChildren();
 
         nameField = new EditBoxComponent(getMinecraft().font, getX() + 47, getY() + 20, 116, 15,
-                Component.translatable(ModConstants.GUI_EDIT_BOX_NAME));
+            Component.translatable(ModConstants.GUI_EDIT_BOX_NAME));
         nameField.setMaxLength(Integer.MAX_VALUE);
         nameField.setValue(name);
         nameField.setEditable(nameEditable);
@@ -79,7 +80,7 @@ public class EditingWindow extends AbstractWindow {
         addChild(nameField);
 
         valueField = new EditBoxComponent(getMinecraft().font, getX() + 47, getY() + 46, 116, 15,
-                Component.translatable(ModConstants.GUI_EDIT_BOX_VALUE));
+            Component.translatable(ModConstants.GUI_EDIT_BOX_VALUE));
         valueField.setMaxLength(Integer.MAX_VALUE);
         valueField.setValue(value);
         valueField.setEditable(valueEditable);
@@ -88,17 +89,17 @@ public class EditingWindow extends AbstractWindow {
         addChild(valueField);
 
         var saveButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_OK), b -> onOk())
-                .pos(getX() + 9, getY() + 62)
-                .size(75, 20)
-                .createNarration(n -> Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_OK))
-                .build();
+            .pos(getX() + 9, getY() + 62)
+            .size(75, 20)
+            .createNarration(n -> Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_OK))
+            .build();
         addChild(saveButton);
 
         var cancelButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_CANCEL), b -> onCancel())
-                .pos(getX() + 93, getY() + 62)
-                .size(75, 20)
-                .createNarration(n -> Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_CANCEL))
-                .build();
+            .pos(getX() + 93, getY() + 62)
+            .size(75, 20)
+            .createNarration(n -> Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_CANCEL))
+            .build();
         addChild(cancelButton);
     }
 
@@ -133,7 +134,7 @@ public class EditingWindow extends AbstractWindow {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
 
         if (!nameEditable) {
@@ -144,7 +145,7 @@ public class EditingWindow extends AbstractWindow {
             guiGraphics.fill(getX() + 43, getY() + 43, getX() + 170, getY() + 59, 0x80000000);
         }
 
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+        super.extractWidgetRenderState(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     @Override

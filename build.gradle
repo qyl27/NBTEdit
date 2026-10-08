@@ -1,10 +1,10 @@
 import java.time.OffsetDateTime
 
 plugins {
-    id 'com.gradleup.shadow' version '8.3.+' apply false
+    id 'com.gradleup.shadow' version '9.6.+' apply false
     id 'me.shedaniel.unified-publishing' version '0.1.+' apply false
-    id 'architectury-plugin' version '3.4-SNAPSHOT'
-    id 'dev.architectury.loom' version '1.13-SNAPSHOT' apply false
+    id 'architectury-plugin' version '3.5-SNAPSHOT'
+    id 'dev.architectury.loom-no-remap' version '1.17-SNAPSHOT' apply false
 }
 
 def ENV = System.getenv()
@@ -21,7 +21,7 @@ ext.mavenVersion = mavenVersion
 subprojects {
     apply plugin: 'java'
     apply plugin: 'architectury-plugin'
-    apply plugin: 'dev.architectury.loom'
+    apply plugin: 'dev.architectury.loom-no-remap'
 
     architectury {
         minecraft = project.minecraft_version
@@ -34,10 +34,7 @@ subprojects {
     dependencies {
         minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
-        mappings loom.layered() {
-            officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-${project.parchment_minecraft_version}:${project.parchment_version}@zip")
-        }
+        compileOnly group: 'org.jetbrains', name: 'annotations', version: rootProject.jetbrains_annotations_version
 
         compileOnly group: 'org.projectlombok', name: 'lombok', version: rootProject.lombok_version
         annotationProcessor group: 'org.projectlombok', name: 'lombok', version: rootProject.lombok_version
@@ -48,11 +45,14 @@ subprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
-        options.release = 21
+        options.release = 25
     }
 
     java {
         withSourcesJar()
+
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
 
     processResources {
@@ -64,8 +64,6 @@ subprojects {
                 'mod_full_name'                      : rootProject.mod_full_name,
                 'mod_version'                        : rootProject.mod_version,
                 'minecraft_version'                  : rootProject.minecraft_version,
-                'parchment_minecraft_version'        : rootProject.parchment_minecraft_version,
-                'parchment_version'                  : rootProject.parchment_version,
                 'fabric_loader_version'              : rootProject.fabric_loader_version,
                 'fabric_api_version'                 : rootProject.fabric_api_version,
                 'mod_menu_version'                   : rootProject.mod_menu_version,
@@ -101,11 +99,6 @@ allprojects {
     version = publishVersion
 
     repositories {
-        maven {
-            name = 'ParchmentMC'
-            url = 'https://maven.parchmentmc.org'
-        }
-
         maven {
             name = 'Mod Menu'
             url = 'https://maven.terraformersmc.com/releases'
@@ -173,11 +166,15 @@ allprojects {
             }
         }
 
+        jar {
+            archiveClassifier = 'dev'
+        }
+
         shadowJar {
             exclude 'architectury.common.json'
 
             configurations = [project.configurations.shadowBundle]
-            archiveClassifier = 'dev-shadow'
+            archiveClassifier = ''
         }
 
         sourcesJar {
@@ -186,18 +183,13 @@ allprojects {
             from commonSources.archiveFile.map { zipTree(it) }
         }
 
-        components.java {
-            withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-                skip()
-            }
-        }
-
         publishing {
             publications {
                 mavenFabric(MavenPublication) {
                     artifactId = p.name
                     version = mavenVersion
-                    from components.java
+                    artifact shadowJar
+                    artifact sourcesJar
                 }
             }
         }
