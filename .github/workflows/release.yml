@@ -1,0 +1,46 @@
+name: Mod Release
+
+permissions:
+  contents: read
+
+on:
+  push:
+    tags:
+      - 'v**'
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      mod-release: true
+      upload-artifacts: true
+      publish-maven: true
+      publish-mod: true
+
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: 'build'
+          path: 'output'
+      - run: ls -R output
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v3
+        with:
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          make_latest: true
+          preserve_order: true
+          fail_on_unmatched_files: true
+          tag_name: ${{ github.ref_name }}
+          name: "Release ${{ github.ref_name }}"
+          files: |
+            output/**/nbtedit-@(fabric|forge|neoforge)-+([.0-9]).jar

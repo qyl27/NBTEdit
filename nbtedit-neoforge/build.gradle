@@ -49,25 +49,3 @@ dependencies {
     common(project(':nbtedit-common')) { transitive = false }
     shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionNeoForge')
 }
-
-unifiedPublishing {
-    project {
-        displayName = "NBTEdit NeoForge ${project.minecraft_version}-${project.mod_version}"
-        version = "${publishVersion}-neoforge"
-        gameVersions = rootProject.game_versions.split(',') as List
-        gameLoaders = ['neoforge']
-        releaseType = 'release'
-
-        mainPublication tasks.shadowJar
-
-        curseforge {
-            token = Objects.requireNonNullElse(System.getenv('CURSEFORGE_TOKEN'), "")
-            id = '678133'
-        }
-
-        modrinth {
-            token = Objects.requireNonNullElse(System.getenv('MODRINTH_TOKEN'), "")
-            id = 'Vr2eDeCw'
-        }
-    }
-}

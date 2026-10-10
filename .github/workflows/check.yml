@@ -1,0 +1,34 @@
+name: Build check
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - .github/workflows/*
+      - nbtedit-common/**/*
+      - nbtedit-fabric/**/*
+      - nbtedit-forge/**/*
+      - nbtedit-neoforge/**/*
+      - gradle/**/*
+      - build.gradle
+      - gradle.properties
+      - settings.gradle
+  pull_request:
+    paths:
+      - .github/workflows/*
+      - nbtedit-common/**/*
+      - nbtedit-fabric/**/*
+      - nbtedit-forge/**/*
+      - nbtedit-neoforge/**/*
+      - gradle/**/*
+      - build.gradle
+      - gradle.properties
+      - settings.gradle
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      mod-release: false
+      upload-artifacts: false

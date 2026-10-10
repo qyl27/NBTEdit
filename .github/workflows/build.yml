@@ -1,0 +1,101 @@
+name: Build
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      mod-release:
+        required: false
+        type: boolean
+        default: true
+      upload-artifacts:
+        required: false
+        type: boolean
+        default: true
+      publish-maven:
+        required: false
+        type: boolean
+        default: false
+      publish-mod:
+        required: false
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      mod-release:
+        required: true
+        type: boolean
+        default: false
+        description: Release mode
+      upload-artifacts:
+        required: true
+        type: boolean
+        default: true
+        description: Upload build artifacts
+      publish-maven:
+        required: true
+        type: boolean
+        default: false
+        description: Publish artifacts to Maven
+      publish-mod:
+        required: true
+        type: boolean
+        default: false
+        description: Publish artifacts to CurseForge and Modrinth
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MOD_RELEASE: ${{ inputs.mod-release }}
+      MOD_CI: true
+      MOD_CI_COMMIT_SHA: ${{ github.sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup JDK 25
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 25
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-provider: basic
+
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        if: inputs.upload-artifacts
+        with:
+          name: 'build'
+          path: |
+            nbtedit-common/build/libs
+            nbtedit-fabric/build/libs
+            nbtedit-forge/build/libs
+            nbtedit-neoforge/build/libs
+          retention-days: 7
+
+      - name: Publish To Maven
+        if: inputs.publish-maven
+        env:
+          MOD_MAVEN_USER: ${{ secrets.MOD_MAVEN_USER }}
+          MOD_MAVEN_PASS: ${{ secrets.MOD_MAVEN_PASS }}
+        run: |
+          ./gradlew publish
+
+      - name: Publish To CF/MR
+        if: inputs.publish-mod
+        env:
+          MOD_CURSEFORGE_TOKEN: ${{ secrets.MOD_CURSEFORGE_TOKEN }}
+          MOD_MODRINTH_TOKEN: ${{ secrets.MOD_MODRINTH_TOKEN }}
+        run: |
+          ./gradlew publishMods

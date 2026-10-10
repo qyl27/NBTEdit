@@ -46,25 +46,3 @@ dependencies {
     common(project(':nbtedit-common')) { transitive = false }
     shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionForge')
 }
-
-unifiedPublishing {
-    project {
-        displayName = "NBTEdit Forge ${project.minecraft_version}-${project.mod_version}"
-        version = "${publishVersion}-forge"
-        gameVersions = [project.minecraft_version]
-        gameLoaders = ['forge']
-        releaseType = 'release'
-
-        mainPublication tasks.shadowJar
-
-        curseforge {
-            token = Objects.requireNonNullElse(System.getenv('CURSEFORGE_TOKEN'), "")
-            id = '678133'
-        }
-
-        modrinth {
-            token = Objects.requireNonNullElse(System.getenv('MODRINTH_TOKEN'), "")
-            id = 'Vr2eDeCw'
-        }
-    }
-}

@@ -2,16 +2,17 @@ import java.time.OffsetDateTime
 
 plugins {
     id 'com.gradleup.shadow' version '9.6.+' apply false
-    id 'me.shedaniel.unified-publishing' version '0.1.+' apply false
+    id 'me.modmuss50.mod-publish-plugin' version '2.2.+'
     id 'architectury-plugin' version '3.5-SNAPSHOT'
     id 'dev.architectury.loom-no-remap' version '1.17-SNAPSHOT' apply false
 }
 
 def ENV = System.getenv()
+def isRelease = 'true'.equalsIgnoreCase(ENV.MOD_RELEASE)
 
 var publishVersion = project.mod_version
 var mavenVersion = publishVersion
-if (!ENV.MOD_RELEASE) {
+if (!isRelease) {
     mavenVersion += '-SNAPSHOT'
 }
 
@@ -129,7 +130,7 @@ allprojects {
 
                 def releaseUrl = 'https://maven.yuluo.dev/repository/maven-releases/'
                 def snapshotUrl = 'https://maven.yuluo.dev/repository/maven-snapshots/'
-                url = ENV.MOD_RELEASE ? releaseUrl : snapshotUrl
+                url = isRelease ? releaseUrl : snapshotUrl
 
                 credentials {
                     username ENV.MOD_MAVEN_USER
@@ -143,7 +144,6 @@ allprojects {
 [project(':nbtedit-fabric'), project(':nbtedit-forge'), project(':nbtedit-neoforge')].each { Project p ->
     configure(p) {
         apply plugin: 'com.gradleup.shadow'
-        apply plugin: 'me.shedaniel.unified-publishing'
 
         architectury {
             platformSetupLoomIde()
@@ -193,5 +193,79 @@ allprojects {
                 }
             }
         }
+    }
+}
+
+publishMods {
+    changelog = providers.environmentVariable('MOD_CHANGELOG').orElse('')
+    type = STABLE
+    dryRun = providers.environmentVariable('MOD_PUBLISH_DRY_RUN').isPresent()
+
+    def curseforgeShared = curseforgeOptions {
+        accessToken = providers.environmentVariable('MOD_CURSEFORGE_TOKEN')
+        projectId = rootProject.curseforge_project_id
+        minecraftVersions.addAll(rootProject.game_versions.split(','))
+        client = true
+        server = true
+    }
+
+    def modrinthShared = modrinthOptions {
+        accessToken = providers.environmentVariable('MOD_MODRINTH_TOKEN')
+        projectId = rootProject.modrinth_project_id
+        minecraftVersions.addAll(rootProject.game_versions.split(','))
+    }
+
+    def fabricShared = publishOptions {
+        file = project(':nbtedit-fabric').shadowJar.archiveFile
+        displayName = "NBTEdit Fabric ${rootProject.minecraft_version}-${rootProject.mod_version}"
+        version = "${publishVersion}+fabric"
+        modLoaders.add('fabric')
+    }
+
+    def forgeShared = publishOptions {
+        file = project(':nbtedit-forge').shadowJar.archiveFile
+        displayName = "NBTEdit Forge ${rootProject.minecraft_version}-${rootProject.mod_version}"
+        version = "${publishVersion}+forge"
+        modLoaders.add('forge')
+    }
+
+    def neoForgeShared = publishOptions {
+        file = project(':nbtedit-neoforge').shadowJar.archiveFile
+        displayName = "NBTEdit NeoForge ${rootProject.minecraft_version}-${rootProject.mod_version}"
+        version = "${publishVersion}+neoforge"
+        modLoaders.add('neoforge')
+    }
+
+    curseforge('curseforgeFabric') {
+        from(curseforgeShared, fabricShared)
+        requires('fabric-api')
+        optional('luckperms')
+    }
+
+    modrinth('modrinthFabric') {
+        from(modrinthShared, fabricShared)
+        requires('fabric-api')
+        optional('luckperms')
+        embeds('fabric-permissions-api')
+    }
+
+    curseforge('curseforgeForge') {
+        from(curseforgeShared, forgeShared)
+        optional('luckperms')
+    }
+
+    modrinth('modrinthForge') {
+        from(modrinthShared, forgeShared)
+        optional('luckperms')
+    }
+
+    curseforge('curseforgeNeoForge') {
+        from(curseforgeShared, neoForgeShared)
+        optional('luckperms')
+    }
+
+    modrinth('modrinthNeoForge') {
+        from(modrinthShared, neoForgeShared)
+        optional('luckperms')
     }
 }
